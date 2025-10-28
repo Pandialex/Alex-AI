@@ -179,7 +179,7 @@ class GeminiChat {
     }
 
     async callGeminiAPI(query, files = []) {
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.AIzaSyAlD7PxnEM5qFNq1JsOPFgT-sbs8TJqipc}`;
 
         // Prepare content parts
         const parts = [];
@@ -521,4 +521,5 @@ window.addEventListener('resize', () => {
         window.chat.isMobile = window.chat.checkMobile();
     }
 });
+
 
