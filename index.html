@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alex AI</title>
+    <title>Alex AI </title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -11,16 +11,22 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Gemini Chat</h2>
-                <button class="new-chat-btn" id="newChatBtn">+ New Chat</button>
+                <h2>Alex AI</h2>
+                <button class="new-chat-btn" id="newChatBtn">
+                    <span class="btn-icon">+</span>
+                    New Chat
+                </button>
             </div>
             <div class="chat-history" id="chatHistory">
                 <!-- Chat history will be populated here -->
             </div>
             <div class="sidebar-footer">
-                <div class="api-key-section">
-                    <input type="password" id="apiKeyInput" placeholder="Enter Gemini API Key">
-                    <button id="saveApiKey">Save</button>
+                <div class="user-section">
+                    <div class="user-avatar">U</div>
+                    <div class="user-info">
+                        <span class="user-name">User</span>
+                        <span class="user-status">Online</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,40 +34,48 @@
         <!-- Main Chat Area -->
         <div class="main-content">
             <div class="chat-header">
-                <h3>Gemini Assistant</h3>
-                <div class="model-info">Powered by Google Gemini</div>
+                <button class="mobile-toggle" id="mobileToggle">
+                    <span>☰</span>
+                </button>
+                <h3>Alex AI Assistant powered by Google Gemini</h3>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle">🌙</button>
+                </div>
             </div>
 
             <div class="chat-container" id="chatContainer">
                 <div class="welcome-message">
-                    <h3>Welcome to  Chat!</h3>
-                    <p>Start a conversation or upload files/images for analysis.</p>
+                    <div class="welcome-icon">🤖</div>
+                    <h3>Hello! I'm Gemini AI</h3>
+                    <p>How can I help you today? You can ask me anything or upload files for analysis.</p>
+                    <div class="suggestions">
+                        <div class="suggestion-chip" data-prompt="Explain quantum computing in simple terms">Explain quantum computing</div>
+                        <div class="suggestion-chip" data-prompt="Write a Python function to calculate fibonacci sequence">Python fibonacci</div>
+                        <div class="suggestion-chip" data-prompt="What are the latest advancements in AI?">Latest AI advancements</div>
+                        <div class="suggestion-chip" data-prompt="Help me plan a healthy meal for the week">Plan healthy meals</div>
+                    </div>
                 </div>
             </div>
 
             <div class="input-area">
-                <!-- File Upload Controls -->
+                <!-- File Upload & Controls -->
                 <div class="file-controls">
-                    <label for="fileUpload" class="file-btn">
-                        📎 Upload File
-                    </label>
-                    <input type="file" id="fileUpload" multiple accept="image/*,.txt,.pdf,.doc,.docx">
-                    
-                    <button id="cameraBtn" class="camera-btn">📷 Camera</button>
-                    <button id="clearBtn" class="clear-btn">🗑️ Clear</button>
-                </div>
-
-                <!-- Camera Modal -->
-                <div id="cameraModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <h3>Take a Photo</h3>
-                        <video id="video" autoplay></video>
-                        <div class="camera-controls">
-                            <button id="captureBtn">Capture Photo</button>
-                            <button id="retakeBtn" style="display:none;">Retake</button>
-                        </div>
-                        <canvas id="canvas" style="display:none;"></canvas>
+                    <div class="control-group">
+                        <label for="fileUpload" class="control-btn file-btn">
+                            <span class="btn-icon">📎</span>
+                            <span class="btn-text">Upload</span>
+                        </label>
+                        <input type="file" id="fileUpload" multiple accept="image/*,.txt,.pdf,.doc,.docx,.jpg,.jpeg,.png">
+                        
+                        <button id="cameraBtn" class="control-btn camera-btn">
+                            <span class="btn-icon">📷</span>
+                            <span class="btn-text">Camera</span>
+                        </button>
+                        
+                        <button id="clearBtn" class="control-btn clear-btn">
+                            <span class="btn-icon">🗑️</span>
+                            <span class="btn-text">Clear</span>
+                        </button>
                     </div>
                 </div>
 
@@ -70,13 +84,40 @@
 
                 <!-- Message Input -->
                 <div class="message-input-container">
-                    <textarea 
-                        id="messageInput" 
-                        placeholder="Type your message here... (Press Shift+Enter for new line, Enter to send)" 
-                        rows="1"
-                    ></textarea>
-                    <button id="sendBtn">Send</button>
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="messageInput" 
+                            class="ask"
+                            placeholder="Message Gemini..." 
+                            rows="1"
+                        ></textarea>
+                        <button id="sendBtn" class="send-btn">
+                            <span class="send-icon">↑</span>
+                        </button>
+                    </div>
                 </div>
+
+                <div class="disclaimer">
+                    <p>Gemini may display inaccurate info, including about people, so double-check its responses.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera Modal -->
+    <div id="cameraModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Take a Photo</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas" style="display:none;"></canvas>
+            </div>
+            <div class="modal-footer">
+                <button id="captureBtn" class="btn-primary">Capture Photo</button>
+                <button id="retakeBtn" class="btn-secondary" style="display:none;">Retake</button>
             </div>
         </div>
     </div>
@@ -84,4 +125,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
