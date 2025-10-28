@@ -2,103 +2,146 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alex AI </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Alex AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
         <!-- Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>Alex AI</h2>
+                <div class="logo">
+                    <div class="logo-icon">✨</div>
+                    <h2>Alex AI</h2>
+                </div>
                 <button class="new-chat-btn" id="newChatBtn">
-                    <span class="btn-icon">+</span>
+                    <i class="fas fa-plus"></i>
                     New Chat
                 </button>
             </div>
+            
             <div class="chat-history" id="chatHistory">
+                <div class="history-title">Recent Chats</div>
                 <!-- Chat history will be populated here -->
             </div>
+            
             <div class="sidebar-footer">
                 <div class="user-section">
-                    <div class="user-avatar">U</div>
-                    <div class="user-info">
-                        <span class="user-name">User</span>
-                        <span class="user-status">Online</span>
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
                     </div>
+                    <div class="user-info">
+                        <span class="user-name">You</span>
+                        <span class="user-status">Free Plan</span>
+                    </div>
+                    <button class="settings-btn" id="settingsBtn">
+                        <i class="fas fa-cog"></i>
+                    </button>
                 </div>
             </div>
         </div>
+
+        <!-- Mobile Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <!-- Main Chat Area -->
         <div class="main-content">
             <div class="chat-header">
                 <button class="mobile-toggle" id="mobileToggle">
-                    <span>☰</span>
+                    <i class="fas fa-bars"></i>
                 </button>
-                <h3>Alex AI Assistant powered by Google Gemini</h3>
+                <div class="header-center">
+                    <h1>Alex 2.1 model</h1>
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>AI is thinking...</span>
+                    </div>
+                </div>
                 <div class="header-actions">
-                    <button class="theme-toggle" id="themeToggle">🌙</button>
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
                 </div>
             </div>
 
             <div class="chat-container" id="chatContainer">
-                <div class="welcome-message">
-                    <div class="welcome-icon">🤖</div>
-                    <h3>Hello! I'm Gemini AI</h3>
-                    <p>How can I help you today? You can ask me anything or upload files for analysis.</p>
-                    <div class="suggestions">
-                        <div class="suggestion-chip" data-prompt="Explain quantum computing in simple terms">Explain quantum computing</div>
-                        <div class="suggestion-chip" data-prompt="Write a Python function to calculate fibonacci sequence">Python fibonacci</div>
-                        <div class="suggestion-chip" data-prompt="What are the latest advancements in AI?">Latest AI advancements</div>
-                        <div class="suggestion-chip" data-prompt="Help me plan a healthy meal for the week">Plan healthy meals</div>
+                <div class="welcome-section">
+                    <div class="welcome-card">
+                        <div class="welcome-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h1>Hello, How can I help you today?</h1>
+                        <p>Ask anything, upload files, or take photos for analysis</p>
+                        
+                        <div class="quick-actions">
+                            <div class="action-grid">
+                                <div class="action-card" data-prompt="Write a professional email">
+                                    <div class="action-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <span>Write Email</span>
+                                </div>
+                                <div class="action-card" data-prompt="Explain quantum computing simply">
+                                    <div class="action-icon">
+                                        <i class="fas fa-atom"></i>
+                                    </div>
+                                    <span>Explain Concept</span>
+                                </div>
+                                <div class="action-card" data-prompt="Write Python code for web scraping">
+                                    <div class="action-icon">
+                                        <i class="fas fa-code"></i>
+                                    </div>
+                                    <span>Code Help</span>
+                                </div>
+                                <div class="action-card" data-prompt="Create a workout plan">
+                                    <div class="action-icon">
+                                        <i class="fas fa-dumbbell"></i>
+                                    </div>
+                                    <span>Fitness Plan</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="input-area">
-                <!-- File Upload & Controls -->
-                <div class="file-controls">
-                    <div class="control-group">
-                        <label for="fileUpload" class="control-btn file-btn">
-                            <span class="btn-icon">📎</span>
-                            <span class="btn-text">Upload</span>
-                        </label>
-                        <input type="file" id="fileUpload" multiple accept="image/*,.txt,.pdf,.doc,.docx,.jpg,.jpeg,.png">
-                        
-                        <button id="cameraBtn" class="control-btn camera-btn">
-                            <span class="btn-icon">📷</span>
-                            <span class="btn-text">Camera</span>
-                        </button>
-                        
-                        <button id="clearBtn" class="control-btn clear-btn">
-                            <span class="btn-icon">🗑️</span>
-                            <span class="btn-text">Clear</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Selected Files Preview -->
+            <div class="input-section">
+                <!-- File Preview -->
                 <div id="filePreview" class="file-preview"></div>
 
-                <!-- Message Input -->
-                <div class="message-input-container">
-                    <div class="input-wrapper">
+                <!-- Input Area -->
+                <div class="input-container">
+                    <div class="input-actions">
+                        <button class="action-btn" id="fileBtn">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="fileUpload" multiple accept="image/*,.txt,.pdf,.doc,.docx,.jpg,.jpeg,.png" hidden>
+                        
+                        <button class="action-btn" id="cameraBtn">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                        
+                        <button class="action-btn" id="clearBtn">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="text-input-wrapper">
                         <textarea 
                             id="messageInput" 
-                            class="ask"
                             placeholder="Message Gemini..." 
                             rows="1"
                         ></textarea>
                         <button id="sendBtn" class="send-btn">
-                            <span class="send-icon">↑</span>
+                            <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
-
+                
                 <div class="disclaimer">
-                    <p>Gemini may display inaccurate info, including about people, so double-check its responses.</p>
+                    <p><i class="fas fa-info-circle"></i> Gemini may display inaccurate information, so please verify important details.</p>
                 </div>
             </div>
         </div>
@@ -106,18 +149,30 @@
 
     <!-- Camera Modal -->
     <div id="cameraModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content camera-modal">
             <div class="modal-header">
-                <h3>Take a Photo</h3>
-                <span class="close">&times;</span>
+                <h3>Take Photo</h3>
+                <button class="close-btn" id="closeCamera">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="modal-body">
-                <video id="video" autoplay playsinline></video>
-                <canvas id="canvas" style="display:none;"></canvas>
+                <div class="camera-container">
+                    <video id="video" autoplay playsinline></video>
+                    <div class="camera-overlay">
+                        <div class="camera-frame"></div>
+                    </div>
+                </div>
+                <canvas id="canvas" hidden></canvas>
             </div>
             <div class="modal-footer">
-                <button id="captureBtn" class="btn-primary">Capture Photo</button>
-                <button id="retakeBtn" class="btn-secondary" style="display:none;">Retake</button>
+                <button id="captureBtn" class="btn-primary capture-btn">
+                    <i class="fas fa-camera"></i>
+                </button>
+                <button id="retakeBtn" class="btn-secondary" style="display:none;">
+                    <i class="fas fa-redo"></i>
+                    Retake
+                </button>
             </div>
         </div>
     </div>
