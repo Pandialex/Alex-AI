@@ -201,6 +201,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .landing-subtitle {
@@ -267,6 +268,34 @@
 
         .projects-btn {
             background: linear-gradient(135deg, var(--project-color), #512da8);
+        }
+
+        .resume-btn {
+            background: linear-gradient(135deg, var(--accent-color), #d33b2c);
+        }
+
+        .theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--bg-tertiary);
+            transform: scale(1.1);
         }
 
         .landing-footer {
@@ -1496,10 +1525,27 @@
             color: var(--text-primary);
         }
 
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .project-tag {
+            padding: 4px 8px;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
         .project-links {
             display: flex;
             gap: 10px;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
 
         .project-link {
@@ -1518,6 +1564,15 @@
         .project-link:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
+        }
+
+        .project-link.secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .project-link.secondary:hover {
+            background: var(--bg-secondary);
         }
 
         .contact-info {
@@ -1995,9 +2050,13 @@
                         <i class="fas fa-robot"></i>
                         Alex AI
                     </a>
-                    <a href="https://ai-resume-analyzer-debugger-builder.onrender.com/" target="_blank" class="landing-button projects-btn">
-                        <i class="fas fa-project-diagram"></i>
-                        Projects
+                    <a href="https://ai-resume-analyzer-debugger-builder.onrender.com/" target="_blank" class="landing-button resume-btn">
+                        <i class="fas fa-file-alt"></i>
+                        Resume Analyzer
+                    </a>
+                    <a href="https://freeimagedownloder.netlify.app/" target="_blank" class="landing-button projects-btn">
+                        <i class="fas fa-images"></i>
+                        ARDAA Gallery
                     </a>
                 </div>
             </div>
@@ -2006,13 +2065,13 @@
         <div class="landing-footer">
             <p>&copy; 2023 Alex Pandian. All rights reserved.</p>
             <div class="social-links">
-                <a href="#" class="social-link" title="LinkedIn">
+                <a href="https://www.linkedin.com/in/alex-pandian-7b0b8421a/" target="_blank" class="social-link" title="LinkedIn">
                     <i class="fab fa-linkedin"></i>
                 </a>
-                <a href="#" class="social-link" title="GitHub">
+                <a href="https://github.com/alexpandian140" target="_blank" class="social-link" title="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
-                <a href="#" class="social-link" title="Twitter">
+                <a href="https://twitter.com/alexpandian140" target="_blank" class="social-link" title="Twitter">
                     <i class="fab fa-twitter"></i>
                 </a>
             </div>
@@ -2024,6 +2083,11 @@
             <div class="shape shape-3"></div>
         </div>
     </div>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Theme">
+        <i class="fas fa-moon"></i>
+    </button>
 
     <!-- Chat Application -->
     <div class="container" id="chatApp" style="display: none;">
@@ -2316,11 +2380,17 @@
                             <div class="project-description">
                                 Built an AI-powered resume analysis platform with ATS scoring and improvement suggestions. Integrated authentication, OTP verification, and token-based access. Handled PDF/DOCX parsing and AI-based grammar feedback.
                             </div>
+                            <div class="project-tags">
+                                <span class="project-tag">Python</span>
+                                <span class="project-tag">Django</span>
+                                <span class="project-tag">AI</span>
+                                <span class="project-tag">Gemini API</span>
+                            </div>
                             <div class="project-links">
                                 <a href="https://ai-resume-analyzer-debugger-builder.onrender.com/" target="_blank" class="project-link">
                                     <i class="fas fa-external-link-alt"></i> Live Demo
                                 </a>
-                                <a href="#" class="project-link" id="downloadResume">
+                                <a href="#" class="project-link secondary" id="downloadResume">
                                     <i class="fas fa-download"></i> Resume
                                 </a>
                             </div>
@@ -2333,13 +2403,45 @@
                             <div class="project-description">
                                 Developed a web app for virtual clothing try-on via webcam feed. Implemented real-time overlay and responsive UI with animations. Created user/admin login, product management, cart, and order tracking.
                             </div>
+                            <div class="project-tags">
+                                <span class="project-tag">Python</span>
+                                <span class="project-tag">OpenCV</span>
+                                <span class="project-tag">Flask</span>
+                                <span class="project-tag">MediaPipe</span>
+                            </div>
                             <div class="project-links">
                                 <a href="#" target="_blank" class="project-link">
                                     <i class="fas fa-external-link-alt"></i> Live Demo
                                 </a>
-                                <a href="#" target="_blank" class="project-link">
+                                <a href="#" target="_blank" class="project-link secondary">
                                     <i class="fab fa-github"></i> GitHub
                                 </a>
+                            </div>
+                        </div>
+                        <div class="project-item">
+                            <div class="project-header">
+                                <div class="project-title">🎨� ARDAA Gallery - Professional Image Gallery Application</div>
+                                <div class="project-tech">React JS</div>
+                            </div>
+                            <div class="project-description">
+                                ARDAA Gallery is a modern, responsive web application that showcases beautiful photography from Unsplash with an elegant, user-friendly interface. Built with cutting-edge web technologies, it features a stunning dark/light mode, Pinterest-style masonry layout, and advanced image management capabilities.
+                            </div>
+                            <div class="project-tags">
+                                <span class="project-tag">React</span>
+                                <span class="project-tag">JavaScript</span>
+                                <span class="project-tag">Responsive Design</span>
+                                <span class="project-tag">Unsplash API</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://freeimagedownloder.netlify.app/" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i> Live Demo
+                                </a>
+                                <a href="https://github.com/alexpandian140/ardaa-gallery" target="_blank" class="project-link secondary">
+                                    <i class="fab fa-github"></i> GitHub
+                                </a>
+                            </div>
+                            <div class="project-details" style="margin-top: 15px; font-style: italic; color: var(--text-secondary);">
+                                "Transforming how users discover and interact with beautiful imagery through cutting-edge web technologies."
                             </div>
                         </div>
                         <div class="project-item">
@@ -2350,11 +2452,16 @@
                             <div class="project-description">
                                 Developed a conversational AI system with Django backend and REST APIs. Implemented chat sessions, authentication, and message persistence. Integrated Gemini API for AI-driven responses.
                             </div>
+                            <div class="project-tags">
+                                <span class="project-tag">JavaScript</span>
+                                <span class="project-tag">Gemini API</span>
+                                <span class="project-tag">REST API</span>
+                            </div>
                             <div class="project-links">
                                 <a href="#" target="_blank" class="project-link">
                                     <i class="fas fa-external-link-alt"></i> Live Demo
                                 </a>
-                                <a href="#" target="_blank" class="project-link">
+                                <a href="#" target="_blank" class="project-link secondary">
                                     <i class="fab fa-github"></i> GitHub
                                 </a>
                             </div>
@@ -2411,13 +2518,13 @@
                     <i class="fas fa-download"></i> Download Resume
                 </a>
                 <div class="social-links">
-                    <a href="#" class="social-link" title="LinkedIn">
+                    <a href="https://www.linkedin.com/in/alex-pandian-7b0b8421a/" target="_blank" class="social-link" title="LinkedIn">
                         <i class="fab fa-linkedin"></i>
                     </a>
-                    <a href="#" class="social-link" title="GitHub">
+                    <a href="https://github.com/alexpandian140" target="_blank" class="social-link" title="GitHub">
                         <i class="fab fa-github"></i>
                     </a>
-                    <a href="#" class="social-link" title="Twitter">
+                    <a href="https://twitter.com/alexpandian140" target="_blank" class="social-link" title="Twitter">
                         <i class="fab fa-twitter"></i>
                     </a>
                 </div>
@@ -2883,6 +2990,12 @@ Virtual Try-On Clothing E-Commerce (2025)
 • Created user/admin login, product management, cart, and order tracking
 • Technologies: Python, OpenCV, Flask, MediaPipe, Django ORM, Bootstrap
 
+ARDAA Gallery - Professional Image Gallery Application (2025)
+• Created a modern, responsive web application showcasing beautiful photography from Unsplash
+• Implemented elegant dark/light mode toggle and Pinterest-style masonry layout
+• Developed advanced image management capabilities with cutting-edge web technologies
+• Technologies: React, JavaScript, Responsive Design, Unsplash API
+
 ChatGPT Clone (2025)
 • Developed a conversational AI system with Django backend and REST APIs
 • Implemented chat sessions, authentication, and message persistence
@@ -3086,7 +3199,7 @@ SOFT SKILLS
                 // Add timestamp
                 const timestampDiv = document.createElement('div');
                 timestampDiv.className = 'message-timestamp';
-                timestampDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                timestampDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' };
                 
                 messageDiv.appendChild(avatar);
                 messageDiv.appendChild(contentDiv);
@@ -3241,7 +3354,7 @@ SOFT SKILLS
                 this.canvas.height = this.video.videoHeight;
                 context.drawImage(this.video, 0, 0);
                 
-                this.canvas.toBlob((blob) => {
+                this.canvas.toBlob((blob) {
                     const file = new File([blob], `photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
                     this.selectedFiles.push(file);
                     this.updateFilePreview();
@@ -3259,7 +3372,7 @@ SOFT SKILLS
             }
 
             closeCameraModal() {
-                this.cameraModal.style.display = 'none';
+                this.cameraModal.style.display = 'none;
                 if (this.stream) {
                     this.stream.getTracks().forEach(track => track.stop());
                 }
