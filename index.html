@@ -147,8 +147,8 @@
         }
 
         .landing-avatar {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             background: white;
             margin: 0 auto;
@@ -160,6 +160,19 @@
             box-shadow: var(--shadow-xl);
             position: relative;
             overflow: hidden;
+            border: 4px solid white;
+        }
+
+        .landing-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .landing-avatar:hover img {
+            transform: scale(1.05);
         }
 
         .landing-avatar::before {
@@ -287,25 +300,6 @@
         .social-link:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
-        }
-
-        .ai-image-container {
-            width: 100%;
-            max-width: 500px;
-            margin: 20px auto;
-            text-align: center;
-        }
-
-        .ai-image {
-            width: 100%;
-            height: auto;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-xl);
-            transition: var(--transition);
-        }
-
-        .ai-image:hover {
-            transform: scale(1.02);
         }
 
         .bg-shapes {
@@ -1380,6 +1374,15 @@
             box-shadow: var(--shadow-xl);
             position: relative;
             z-index: 1;
+            overflow: hidden;
+            border: 4px solid white;
+        }
+
+        .portfolio-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .portfolio-hero h1 {
@@ -1663,6 +1666,11 @@
                 max-width: 300px;
             }
             
+            .landing-avatar {
+                width: 120px;
+                height: 120px;
+            }
+            
             .container {
                 height: 100vh;
                 height: 100dvh; /* Dynamic viewport height for mobile */
@@ -1845,7 +1853,6 @@
             .landing-avatar {
                 width: 100px;
                 height: 100px;
-                font-size: 40px;
             }
             
             .chat-container {
@@ -1966,7 +1973,7 @@
     <div class="landing-page" id="landingPage">
         <div class="landing-header">
             <div class="landing-logo">
-                
+                <!-- <div class="landing-logo-icon">✨</div> -->
                 <h1>Alex Pandian</h1>
             </div>
         </div>
@@ -1974,14 +1981,10 @@
         <div class="landing-content">
             <div class="landing-hero">
                 <div class="landing-avatar">
-                    <i class="fas fa-user"></i>
+                    <img src="https://z-cdn-media.chatglm.cn/files/6d5790d4-11b4-47f4-a549-4e754a42c890_WhatsApp%20Image%202025-10-28%20at%2011.36.06_bf97138f.jpg?auth_key=1793167747-9c8092ed052d4608948f02c39a6e0953-0-3da9722bb1339cf2927b1ca9932bf1ae" alt="Alex Pandian" class="profile-image">
                 </div>
                 <h2 class="landing-title">Software Developer - Python</h2>
                 <p class="landing-subtitle">Passionate about creating innovative AI-powered applications and solving complex problems with clean, efficient code.</p>
-                
-                <div class="ai-image-container">
-                    <img src="https://z-cdn-media.chatglm.cn/files/6d5790d4-11b4-47f4-a549-4e754a42c890_WhatsApp%20Image%202025-10-28%20at%2011.36.06_bf97138f.jpg?auth_key=1793167747-9c8092ed052d4608948f02c39a6e0953-0-3da9722bb1339cf2927b1ca9932bf1ae" alt="Alex AI" class="ai-image">
-                </div>
                 
                 <div class="landing-buttons">
                     <a href="#" class="landing-button portfolio-btn" id="portfolioBtn">
@@ -2075,7 +2078,7 @@
                     <h1>Alex</h1>
                     <div class="status-indicator">
                         <div class="status-dot"></div>
-                        <span></span>
+                        <span>AI is thinking...</span>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -2215,7 +2218,7 @@
             <div class="portfolio-body">
                 <div class="portfolio-hero">
                     <div class="portfolio-avatar">
-                        <i class="fas fa-user"></i>
+                        <img src="https://z-cdn-media.chatglm.cn/files/6d5790d4-11b4-47f4-a549-4e754a42c890_WhatsApp%20Image%202025-10-28%20at%2011.36.06_bf97138f.jpg?auth_key=1793167747-9c8092ed052d4608948f02c39a6e0953-0-3da9722bb1339cf2927b1ca9932bf1ae" alt="Alex Pandian" class="profile-image">
                     </div>
                     <h1>Alex Pandian M</h1>
                     <p>Software Developer – Python | AI Enthusiast | Full Stack Developer</p>
@@ -2371,7 +2374,7 @@
                             </div>
                             <div class="contact-item">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span>chenai (native  Madurai),Tamil Nadu, India</span>
+                                <span>chennai (Native 'Madurai'), Tamil Nadu, India</span>
                             </div>
                         </div>
                         
@@ -3405,4 +3408,3 @@ SOFT SKILLS
     </script>
 </body>
 </html>
-
