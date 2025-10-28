@@ -1,6 +1,6 @@
 class GeminiChat {
     constructor() {
-        this.apiKey = 'AIzaSyDi1LrWUeVWtadIWDdnF3I_qjcHZWbgrPA'; // Your API key
+        this.apiKey = 'AIzaSyAlD7PxnEM5qFNq1JsOPFgT-sbs8TJqipc'; // Your API key
         this.currentChat = [];
         this.isProcessing = false;
         this.isMobile = this.checkMobile();
@@ -521,3 +521,4 @@ window.addEventListener('resize', () => {
         window.chat.isMobile = window.chat.checkMobile();
     }
 });
+
