@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gemini AI Chat</title>
+    <title>Alex Pandian - Software Developer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -18,6 +18,7 @@
             --secondary-color: #34a853;
             --accent-color: #ea4335;
             --warning-color: #fbbc04;
+            --project-color: #673ab7; /* Purple color for projects button */
             
             --bg-primary: #ffffff;
             --bg-secondary: #f8f9fa;
@@ -42,7 +43,8 @@
             --radius-lg: 16px;
             --radius-xl: 20px;
             
-            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         [data-theme="dark"] {
@@ -51,6 +53,7 @@
             --secondary-color: #81c995;
             --accent-color: #f28b82;
             --warning-color: #fdd663;
+            --project-color: #9575cd;
             
             --bg-primary: #1a1a1a;
             --bg-secondary: #2d2d2d;
@@ -71,8 +74,281 @@
             background-color: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.5;
-            overflow: hidden;
+            overflow-x: hidden;
             transition: var(--transition);
+        }
+
+        /* Landing Page Styles */
+        .landing-page {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .landing-header {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .landing-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .landing-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .landing-logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .landing-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .landing-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .landing-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--primary-color);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .landing-avatar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .landing-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .landing-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .landing-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .landing-button {
+            padding: 16px 32px;
+            border-radius: var(--radius-lg);
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .landing-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .landing-button:hover::before {
+            transform: translateX(0);
+        }
+
+        .landing-button:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .portfolio-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        }
+
+        .chat-btn {
+            background: linear-gradient(135deg, var(--secondary-color), #2e7d32);
+        }
+
+        .projects-btn {
+            background: linear-gradient(135deg, var(--project-color), #512da8);
+        }
+
+        .landing-footer {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .ai-image-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .ai-image {
+            width: 100%;
+            height: auto;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            transition: var(--transition);
+        }
+
+        .ai-image:hover {
+            transform: scale(1.02);
+        }
+
+        .bg-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary-color);
+            top: -100px;
+            right: -100px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary-color);
+            bottom: -50px;
+            left: -50px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: var(--accent-color);
+            top: 50%;
+            left: 10%;
+            animation: float 7s ease-in-out infinite;
         }
 
         /* Container Layout */
@@ -89,8 +365,9 @@
             border-right: 1px solid var(--border-light);
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             z-index: 1000;
+            box-shadow: var(--shadow-lg);
         }
 
         .sidebar-header {
@@ -103,6 +380,12 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .logo-icon {
@@ -115,6 +398,11 @@
             justify-content: center;
             font-size: 16px;
             color: white;
+            transition: var(--transition);
+        }
+
+        .logo:hover .logo-icon {
+            transform: rotate(10deg) scale(1.1);
         }
 
         .logo h2 {
@@ -138,11 +426,74 @@
             align-items: center;
             gap: 8px;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .new-chat-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .new-chat-btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .new-chat-btn:hover {
             background: var(--primary-hover);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .portfolio-btn-sidebar {
+            width: 100%;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .portfolio-btn-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .portfolio-btn-sidebar:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .portfolio-btn-sidebar:hover {
+            transform: translateY(-2px);
             box-shadow: var(--shadow-md);
         }
 
@@ -170,11 +521,30 @@
             color: var(--text-secondary);
             transition: var(--transition);
             border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .chat-item:hover::before {
+            transform: scaleY(1);
         }
 
         .chat-item:hover {
             background: var(--bg-tertiary);
             color: var(--text-primary);
+            padding-left: 20px;
         }
 
         .chat-item.active {
@@ -211,6 +581,11 @@
             justify-content: center;
             color: white;
             font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .user-section:hover .user-avatar {
+            transform: scale(1.1);
         }
 
         .user-info {
@@ -242,6 +617,7 @@
         .settings-btn:hover {
             background: var(--bg-tertiary);
             color: var(--text-primary);
+            transform: rotate(15deg);
         }
 
         /* Main Content */
@@ -315,8 +691,8 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
         .header-actions {
@@ -324,7 +700,7 @@
             gap: 8px;
         }
 
-        .theme-toggle {
+        .theme-toggle, .voice-toggle, .export-btn {
             background: none;
             border: none;
             color: var(--text-primary);
@@ -335,7 +711,7 @@
             transition: var(--transition);
         }
 
-        .theme-toggle:hover {
+        .theme-toggle:hover, .voice-toggle:hover, .export-btn:hover {
             background: var(--bg-secondary);
             transform: rotate(15deg);
         }
@@ -355,6 +731,12 @@
             align-items: center;
             justify-content: center;
             min-height: 60vh;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .welcome-card {
@@ -375,6 +757,7 @@
             font-size: 32px;
             color: white;
             box-shadow: var(--shadow-lg);
+            animation: float 3s ease-in-out infinite;
         }
 
         .welcome-card h1 {
@@ -413,13 +796,35 @@
             cursor: pointer;
             transition: var(--transition);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-tertiary);
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            z-index: 0;
+        }
+
+        .action-card:hover::before {
+            transform: translateY(0);
         }
 
         .action-card:hover {
-            background: var(--bg-tertiary);
-            transform: translateY(-2px);
+            transform: translateY(-4px);
             box-shadow: var(--shadow-md);
             border-color: var(--primary-color);
+        }
+
+        .action-card:hover .action-icon {
+            transform: scale(1.1);
         }
 
         .action-icon {
@@ -433,12 +838,17 @@
             margin: 0 auto 8px;
             color: var(--primary-color);
             font-size: 16px;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
         }
 
         .action-card span {
             font-size: 12px;
             font-weight: 500;
             color: var(--text-primary);
+            position: relative;
+            z-index: 1;
         }
 
         /* Message Styles */
@@ -447,13 +857,13 @@
             gap: 16px;
             padding: 20px;
             max-width: 100%;
-            animation: messageSlide 0.3s ease;
+            animation: messageSlide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         @keyframes messageSlide {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -465,6 +875,7 @@
             background: var(--bg-secondary);
             border-radius: var(--radius-lg);
             margin: 8px 0;
+            position: relative;
         }
 
         .message.assistant {
@@ -481,6 +892,11 @@
             font-size: 14px;
             flex-shrink: 0;
             margin-top: 4px;
+            transition: var(--transition);
+        }
+
+        .message:hover .avatar {
+            transform: scale(1.1);
         }
 
         .user .avatar {
@@ -504,6 +920,46 @@
             border-radius: var(--radius-md);
             margin: 12px 0;
             box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .message-content img:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .message:hover .message-actions {
+            opacity: 1;
+        }
+
+        .message-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            transition: var(--transition);
+        }
+
+        .message-action-btn:hover {
+            color: var(--primary-color);
+            background: var(--bg-tertiary);
+        }
+
+        .message-timestamp {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
         }
 
         /* Input Section */
@@ -530,6 +986,7 @@
             border-radius: 20px;
             font-size: 12px;
             color: var(--text-primary);
+            animation: fadeIn 0.3s ease;
         }
 
         .file-preview-item .remove-btn {
@@ -576,11 +1033,17 @@
             border-radius: var(--radius-sm);
             transition: var(--transition);
             font-size: 16px;
+            position: relative;
         }
 
         .action-btn:hover {
             background: var(--bg-secondary);
             color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .action-btn.active {
+            color: var(--primary-color);
         }
 
         .text-input-wrapper {
@@ -620,6 +1083,26 @@
             width: 36px;
             height: 36px;
             font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .send-btn:hover::before {
+            width: 100px;
+            height: 100px;
         }
 
         .send-btn:hover:not(:disabled) {
@@ -669,6 +1152,12 @@
             max-width: 90vw;
             width: 400px;
             overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .modal-header {
@@ -815,13 +1304,365 @@
                 opacity: 0.5;
             }
             40% { 
-                transform: scale(1);
+                transform: scale(1.2);
                 opacity: 1;
             }
         }
 
+        /* Voice Recording Indicator */
+        .voice-recording {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .voice-recording i {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Portfolio Modal Styles */
+        .portfolio-modal {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            max-width: 95vw;
+            width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .portfolio-body {
+            padding: 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .portfolio-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 40px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portfolio-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+        .portfolio-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: var(--primary-color);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            z-index: 1;
+        }
+
+        .portfolio-hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .portfolio-hero p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .portfolio-content {
+            padding: 40px;
+        }
+
+        .portfolio-section {
+            margin-bottom: 40px;
+        }
+
+        .portfolio-section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .portfolio-section h2 i {
+            color: var(--primary-color);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid var(--border-light);
+        }
+
+        .skill-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            background: var(--bg-tertiary);
+        }
+
+        .skill-icon {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .skill-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .experience-item, .project-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .experience-item:hover, .project-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .experience-header, .project-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .experience-title, .project-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .experience-duration, .project-tech {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .experience-company, .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        .experience-details, .project-details {
+            color: var(--text-primary);
+        }
+
+        .project-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .project-link:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+        }
+
+        .contact-item i {
+            color: var(--primary-color);
+        }
+
+        /* Contact Form Styles */
+        .contact-form {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            transition: var(--transition);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-submit {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .portfolio-footer {
+            padding: 20px 40px;
+            background: var(--bg-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .download-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
+            .landing-title {
+                font-size: 28px;
+            }
+            
+            .landing-subtitle {
+                font-size: 16px;
+            }
+            
+            .landing-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .landing-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
             .container {
                 height: 100vh;
                 height: 100dvh; /* Dynamic viewport height for mobile */
@@ -944,9 +1785,69 @@
             #video {
                 height: 250px;
             }
+            
+            /* Portfolio Modal Mobile Styles */
+            .portfolio-modal {
+                width: 95vw;
+                max-height: 95vh;
+            }
+            
+            .portfolio-hero {
+                padding: 30px 20px;
+            }
+            
+            .portfolio-hero h1 {
+                font-size: 28px;
+            }
+            
+            .portfolio-hero p {
+                font-size: 16px;
+            }
+            
+            .portfolio-content {
+                padding: 20px;
+            }
+            
+            .portfolio-section h2 {
+                font-size: 20px;
+            }
+            
+            .skills-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .experience-header, .project-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .portfolio-footer {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+            
+            .contact-form {
+                padding: 20px;
+            }
         }
 
         @media (max-width: 480px) {
+            .landing-title {
+                font-size: 24px;
+            }
+            
+            .landing-subtitle {
+                font-size: 14px;
+            }
+            
+            .landing-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+            }
+            
             .chat-container {
                 padding: 12px;
             }
@@ -970,6 +1871,18 @@
             .disclaimer p {
                 font-size: 11px;
             }
+            
+            .portfolio-hero h1 {
+                font-size: 24px;
+            }
+            
+            .portfolio-content {
+                padding: 15px;
+            }
+            
+            .contact-form {
+                padding: 15px;
+            }
         }
 
         /* Safe area insets for notch phones */
@@ -983,39 +1896,148 @@
 
         /* Hide scrollbars but keep functionality */
         .chat-container::-webkit-scrollbar,
-        .chat-history::-webkit-scrollbar {
+        .chat-history::-webkit-scrollbar,
+        .portfolio-body::-webkit-scrollbar {
             width: 4px;
         }
 
         .chat-container::-webkit-scrollbar-track,
-        .chat-history::-webkit-scrollbar-track {
+        .chat-history::-webkit-scrollbar-track,
+        .portfolio-body::-webkit-scrollbar-track {
             background: transparent;
         }
 
         .chat-container::-webkit-scrollbar-thumb,
-        .chat-history::-webkit-scrollbar-thumb {
+        .chat-history::-webkit-scrollbar-thumb,
+        .portfolio-body::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 2px;
         }
 
         .chat-container::-webkit-scrollbar-thumb:hover,
-        .chat-history::-webkit-scrollbar-thumb:hover {
+        .chat-history::-webkit-scrollbar-thumb:hover,
+        .portfolio-body::-webkit-scrollbar-thumb:hover {
             background: var(--text-tertiary);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            z-index: 3000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Swipe hint */
+        .swipe-hint {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 0 4px 4px 0;
+            opacity: 0.7;
+            animation: swipeHint 2s infinite;
+        }
+
+        @keyframes swipeHint {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Landing Page -->
+    <div class="landing-page" id="landingPage">
+        <div class="landing-header">
+            <div class="landing-logo">
+                <div class="landing-logo-icon">✨</div>
+                <h1>Alex Pandian</h1>
+            </div>
+        </div>
+        
+        <div class="landing-content">
+            <div class="landing-hero">
+                <div class="landing-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 class="landing-title">Software Developer - Python</h2>
+                <p class="landing-subtitle">Passionate about creating innovative AI-powered applications and solving complex problems with clean, efficient code.</p>
+                
+                <div class="ai-image-container">
+                    <img src="https://z-cdn-media.chatglm.cn/files/6d5790d4-11b4-47f4-a549-4e754a42c890_WhatsApp%20Image%202025-10-28%20at%2011.36.06_bf97138f.jpg?auth_key=1793167747-9c8092ed052d4608948f02c39a6e0953-0-3da9722bb1339cf2927b1ca9932bf1ae" alt="Alex AI" class="ai-image">
+                </div>
+                
+                <div class="landing-buttons">
+                    <a href="#" class="landing-button portfolio-btn" id="portfolioBtn">
+                        <i class="fas fa-briefcase"></i>
+                        Alex Portfolio
+                    </a>
+                    <a href="#" class="landing-button chat-btn" id="chatBtn">
+                        <i class="fas fa-robot"></i>
+                        Alex AI
+                    </a>
+                    <a href="https://ai-resume-analyzer-debugger-builder.onrender.com/" target="_blank" class="landing-button projects-btn">
+                        <i class="fas fa-project-diagram"></i>
+                        Projects
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="landing-footer">
+            <p>&copy; 2023 Alex Pandian. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" class="social-link" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="social-link" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#" class="social-link" title="Twitter">
+                    <i class="fab fa-twitter"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+    </div>
+
+    <!-- Chat Application -->
+    <div class="container" id="chatApp" style="display: none;">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
                     <div class="logo-icon">✨</div>
-                    <h2>Gemini AI</h2>
+                    <h2>Alex AI</h2>
                 </div>
                 <button class="new-chat-btn" id="newChatBtn">
                     <i class="fas fa-plus"></i>
                     New Chat
+                </button>
+                <button class="portfolio-btn-sidebar" id="portfolioSidebarBtn">
+                    <i class="fas fa-briefcase"></i>
+                    Alex Pandian Portfolio
                 </button>
             </div>
             
@@ -1050,14 +2072,20 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="header-center">
-                    <h1>Gemini</h1>
+                    <h1>Alex</h1>
                     <div class="status-indicator">
                         <div class="status-dot"></div>
                         <span>AI is thinking...</span>
                     </div>
                 </div>
                 <div class="header-actions">
-                    <button class="theme-toggle" id="themeToggle">
+                    <button class="voice-toggle" id="voiceToggle" title="Voice Input">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="export-btn" id="exportBtn" title="Export Chat">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
                         <i class="fas fa-moon"></i>
                     </button>
                 </div>
@@ -1102,6 +2130,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="swipe-hint" id="swipeHint"></div>
             </div>
 
             <div class="input-section">
@@ -1111,16 +2140,16 @@
                 <!-- Input Area -->
                 <div class="input-container">
                     <div class="input-actions">
-                        <button class="action-btn" id="fileBtn">
+                        <button class="action-btn" id="fileBtn" title="Attach File">
                             <i class="fas fa-paperclip"></i>
                         </button>
                         <input type="file" id="fileUpload" multiple accept="image/*,.txt,.pdf,.doc,.docx,.jpg,.jpeg,.png" hidden>
                         
-                        <button class="action-btn" id="cameraBtn">
+                        <button class="action-btn" id="cameraBtn" title="Take Photo">
                             <i class="fas fa-camera"></i>
                         </button>
                         
-                        <button class="action-btn" id="clearBtn">
+                        <button class="action-btn" id="clearBtn" title="Clear Files">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -1128,7 +2157,7 @@
                     <div class="text-input-wrapper">
                         <textarea 
                             id="messageInput" 
-                            placeholder="Message Gemini..." 
+                            placeholder="Message Alex..." 
                             rows="1"
                         ></textarea>
                         <button id="sendBtn" class="send-btn">
@@ -1138,7 +2167,7 @@
                 </div>
                 
                 <div class="disclaimer">
-                    <p><i class="fas fa-info-circle"></i> Gemini may display inaccurate information, so please verify important details.</p>
+                    <p><i class="fas fa-info-circle"></i> Alex AI may display inaccurate information, so please verify important details.</p>
                 </div>
             </div>
         </div>
@@ -1174,19 +2203,246 @@
         </div>
     </div>
 
+    <!-- Portfolio Modal -->
+    <div id="portfolioModal" class="modal">
+        <div class="modal-content portfolio-modal">
+            <div class="modal-header">
+                <h3>Alex Pandian Portfolio</h3>
+                <button class="close-btn" id="closePortfolio">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="portfolio-body">
+                <div class="portfolio-hero">
+                    <div class="portfolio-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h1>Alex Pandian M</h1>
+                    <p>Software Developer – Python | AI Enthusiast | Full Stack Developer</p>
+                </div>
+                
+                <div class="portfolio-content">
+                    <div class="portfolio-section">
+                        <h2><i class="fas fa-user-circle"></i> About Me</h2>
+                        <p>I'm a passionate software developer with expertise in Python, Django, Flask, and AI integration. I love creating innovative solutions that bridge the gap between cutting-edge technology and practical user needs. With a strong foundation in both frontend and backend development, I bring ideas to life through clean, efficient code.</p>
+                    </div>
+                    
+                    <div class="portfolio-section">
+                        <h2><i class="fas fa-code"></i> Skills</h2>
+                        <div class="skills-grid">
+                            <div class="skill-item">
+                                <div class="skill-icon"><i class="fab fa-python"></i></div>
+                                <div class="skill-name">Python</div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-icon"><i class="fab fa-js"></i></div>
+                                <div class="skill-name">JavaScript</div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-icon"><i class="fab fa-react"></i></div>
+                                <div class="skill-name">React</div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-icon"><i class="fas fa-database"></i></div>
+                                <div class="skill-name">Django ORM</div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-icon"><i class="fas fa-brain"></i></div>
+                                <div class="skill-name">AI Integration</div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-icon"><i class="fab fa-html5"></i></div>
+                                <div class="skill-name">HTML/CSS</div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-icon"><i class="fas fa-camera"></i></div>
+                                <div class="skill-name">OpenCV</div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-icon"><i class="fas fa-database"></i></div>
+                                <div class="skill-name">MySQL</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="portfolio-section">
+                        <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <div class="experience-title">Bachelor of Engineering in Computer Science</div>
+                                <div class="experience-duration">2021 - 2025</div>
+                            </div>
+                            <div class="experience-company">University College of Engineering, Dindigul</div>
+                            <div class="experience-details">
+                                CGPA: 7.3
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="portfolio-section">
+                        <h2><i class="fas fa-certificate"></i> Certifications</h2>
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <div class="experience-title">Python Fullstack Development Training</div>
+                                <div class="experience-duration">2025</div>
+                            </div>
+                            <div class="experience-company">Codepilot, Chennai</div>
+                            <div class="experience-details">
+                                Learned Django, Flask, REST APIs, ORM, and deployment.
+                            </div>
+                        </div>
+                        <div class="experience-item">
+                            <div class="experience-header">
+                                <div class="experience-title">UI and UX Development Internship</div>
+                                <div class="experience-duration">2024</div>
+                            </div>
+                            <div class="experience-company">MITA IT Solutions, Dindigul</div>
+                            <div class="experience-details">
+                                Learned Frontend, HTML, CSS, Figma tools.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="portfolio-section">
+                        <h2><i class="fas fa-project-diagram"></i> Projects</h2>
+                        <div class="project-item">
+                            <div class="project-header">
+                                <div class="project-title">AI Resume Analyzer & Debugger</div>
+                                <div class="project-tech">Python, Django, Gemini API</div>
+                            </div>
+                            <div class="project-description">
+                                Built an AI-powered resume analysis platform with ATS scoring and improvement suggestions. Integrated authentication, OTP verification, and token-based access. Handled PDF/DOCX parsing and AI-based grammar feedback.
+                            </div>
+                            <div class="project-links">
+                                <a href="https://ai-resume-analyzer-debugger-builder.onrender.com/" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i> Live Demo
+                                </a>
+                                <a href="#" class="project-link" id="downloadResume">
+                                    <i class="fas fa-download"></i> Resume
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-item">
+                            <div class="project-header">
+                                <div class="project-title">Virtual Try-On Clothing E-Commerce</div>
+                                <div class="project-tech">Python, OpenCV, Flask, MediaPipe</div>
+                            </div>
+                            <div class="project-description">
+                                Developed a web app for virtual clothing try-on via webcam feed. Implemented real-time overlay and responsive UI with animations. Created user/admin login, product management, cart, and order tracking.
+                            </div>
+                            <div class="project-links">
+                                <a href="#" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i> Live Demo
+                                </a>
+                                <a href="#" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i> GitHub
+                                </a>
+                            </div>
+                        </div>
+                        <div class="project-item">
+                            <div class="project-header">
+                                <div class="project-title">ChatGPT Clone</div>
+                                <div class="project-tech">JavaScript, Gemini API, REST API</div>
+                            </div>
+                            <div class="project-description">
+                                Developed a conversational AI system with Django backend and REST APIs. Implemented chat sessions, authentication, and message persistence. Integrated Gemini API for AI-driven responses.
+                            </div>
+                            <div class="project-links">
+                                <a href="#" target="_blank" class="project-link">
+                                    <i class="fas fa-external-link-alt"></i> Live Demo
+                                </a>
+                                <a href="#" target="_blank" class="project-link">
+                                    <i class="fab fa-github"></i> GitHub
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="portfolio-section">
+                        <h2><i class="fas fa-envelope"></i> Contact</h2>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>pandialex140@gmail.com</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <span>+91 93635 34294</span>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Dindigul, Tamil Nadu, India</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-form">
+                            <h3>Get In Touch</h3>
+                            <form id="contactForm">
+                                <div class="form-group">
+                                    <label for="name">Your Name</label>
+                                    <input type="text" id="name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Your Email</label>
+                                    <input type="email" id="email" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="subject">Subject</label>
+                                    <input type="text" id="subject" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="message">Message</label>
+                                    <textarea id="message" class="form-control" required></textarea>
+                                </div>
+                                <button type="submit" class="form-submit">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portfolio-footer">
+                <a href="#" class="download-btn" id="downloadResumeBtn">
+                    <i class="fas fa-download"></i> Download Resume
+                </a>
+                <div class="social-links">
+                    <a href="#" class="social-link" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="social-link" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link" title="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
     <script>
-        class GeminiChat {
+        class AlexAIApp {
             constructor() {
                 this.apiKey = 'AIzaSyAlD7PxnEM5qFNq1JsOPFgT-sbs8TJqipc';
                 this.currentChat = [];
                 this.isProcessing = false;
                 this.isMobile = this.checkMobile();
+                this.touchStartX = 0;
+                this.touchEndX = 0;
+                this.isRecording = false;
+                this.recognition = null;
                 
                 this.initializeElements();
                 this.attachEventListeners();
                 this.setupMobileFeatures();
                 this.applyTheme();
                 this.loadChatHistory();
+                this.initializeVoiceRecognition();
             }
 
             checkMobile() {
@@ -1195,6 +2451,12 @@
             }
 
             initializeElements() {
+                // Landing page elements
+                this.landingPage = document.getElementById('landingPage');
+                this.chatApp = document.getElementById('chatApp');
+                this.portfolioBtn = document.getElementById('portfolioBtn');
+                this.chatBtn = document.getElementById('chatBtn');
+                
                 // Core elements
                 this.chatContainer = document.getElementById('chatContainer');
                 this.messageInput = document.getElementById('messageInput');
@@ -1205,12 +2467,26 @@
                 this.cameraBtn = document.getElementById('cameraBtn');
                 this.clearBtn = document.getElementById('clearBtn');
                 this.newChatBtn = document.getElementById('newChatBtn');
+                this.portfolioSidebarBtn = document.getElementById('portfolioSidebarBtn');
                 
                 // Mobile elements
                 this.mobileToggle = document.getElementById('mobileToggle');
                 this.sidebar = document.getElementById('sidebar');
                 this.sidebarOverlay = document.getElementById('sidebarOverlay');
                 this.themeToggle = document.getElementById('themeToggle');
+                this.swipeHint = document.getElementById('swipeHint');
+                
+                // New features
+                this.voiceToggle = document.getElementById('voiceToggle');
+                this.exportBtn = document.getElementById('exportBtn');
+                this.toast = document.getElementById('toast');
+                
+                // Portfolio modal elements
+                this.portfolioModal = document.getElementById('portfolioModal');
+                this.closePortfolio = document.getElementById('closePortfolio');
+                this.downloadResumeBtn = document.getElementById('downloadResumeBtn');
+                this.downloadResume = document.getElementById('downloadResume');
+                this.contactForm = document.getElementById('contactForm');
                 
                 // Camera elements
                 this.cameraModal = document.getElementById('cameraModal');
@@ -1243,6 +2519,9 @@
                 // Handle viewport height changes
                 this.setViewportHeight();
                 window.addEventListener('resize', () => this.setViewportHeight());
+                
+                // Setup swipe gestures
+                this.setupSwipeGestures();
             }
 
             setViewportHeight() {
@@ -1250,7 +2529,108 @@
                 document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
             }
 
+            setupSwipeGestures() {
+                // Touch events for swipe gestures
+                document.addEventListener('touchstart', (e) => {
+                    this.touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    this.touchEndX = e.changedTouches[0].screenX;
+                    this.handleSwipeGesture();
+                }, { passive: true });
+            }
+
+            handleSwipeGesture() {
+                const swipeThreshold = 50;
+                const diff = this.touchStartX - this.touchEndX;
+                
+                // Swipe right to open sidebar
+                if (diff < -swipeThreshold && this.touchStartX < 50 && !this.sidebarOpen) {
+                    this.toggleSidebar();
+                }
+                
+                // Swipe left to close sidebar
+                if (diff > swipeThreshold && this.sidebarOpen) {
+                    this.toggleSidebar();
+                }
+            }
+
+            initializeVoiceRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = true;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onstart = () => {
+                        this.isRecording = true;
+                        this.voiceToggle.classList.add('active');
+                        this.showToast('Listening... Speak now');
+                        this.showVoiceRecordingIndicator();
+                    };
+                    
+                    this.recognition.onresult = (event) => {
+                        const transcript = Array.from(event.results)
+                            .map(result => result[0].transcript)
+                            .join('');
+                        
+                        this.messageInput.value = transcript;
+                        this.autoResizeTextarea();
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        this.isRecording = false;
+                        this.voiceToggle.classList.remove('active');
+                        this.hideVoiceRecordingIndicator();
+                        this.showToast(`Error: ${event.error}`);
+                    };
+                    
+                    this.recognition.onend = () => {
+                        this.isRecording = false;
+                        this.voiceToggle.classList.remove('active');
+                        this.hideVoiceRecordingIndicator();
+                        
+                        // Auto-send if there's content
+                        if (this.messageInput.value.trim()) {
+                            this.sendMessage();
+                        }
+                    };
+                } else {
+                    this.voiceToggle.style.display = 'none';
+                }
+            }
+
+            showVoiceRecordingIndicator() {
+                const indicator = document.createElement('div');
+                indicator.className = 'voice-recording';
+                indicator.id = 'voiceRecordingIndicator';
+                indicator.innerHTML = '<i class="fas fa-microphone"></i> Recording...';
+                this.inputSection = document.querySelector('.input-section');
+                this.inputSection.appendChild(indicator);
+            }
+
+            hideVoiceRecordingIndicator() {
+                const indicator = document.getElementById('voiceRecordingIndicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+            }
+
             attachEventListeners() {
+                // Landing page buttons
+                this.portfolioBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showChatApp();
+                    this.openPortfolioModal();
+                });
+                
+                this.chatBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showChatApp();
+                });
+                
                 // Message sending
                 this.sendBtn.addEventListener('click', () => this.sendMessage());
                 this.messageInput.addEventListener('keydown', (e) => {
@@ -1283,8 +2663,35 @@
                 // Theme toggle
                 this.themeToggle.addEventListener('click', () => this.toggleTheme());
 
+                // Voice toggle
+                this.voiceToggle.addEventListener('click', () => this.toggleVoiceRecording());
+
+                // Export chat
+                this.exportBtn.addEventListener('click', () => this.exportChat());
+
                 // New chat
                 this.newChatBtn.addEventListener('click', () => this.startNewChat());
+
+                // Portfolio button
+                this.portfolioSidebarBtn.addEventListener('click', () => this.openPortfolioModal());
+                this.closePortfolio.addEventListener('click', () => this.closePortfolioModal());
+                
+                // Download resume
+                this.downloadResumeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.downloadResumeFile();
+                });
+                
+                this.downloadResume.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.downloadResumeFile();
+                });
+
+                // Contact form
+                this.contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleContactForm();
+                });
 
                 // Quick actions
                 document.querySelectorAll('.action-card').forEach(card => {
@@ -1302,11 +2709,22 @@
                         this.closeCameraModal();
                     }
                 });
+                
+                this.portfolioModal.addEventListener('click', (e) => {
+                    if (e.target === this.portfolioModal) {
+                        this.closePortfolioModal();
+                    }
+                });
 
                 // Handle orientation changes
                 window.addEventListener('orientationchange', () => {
                     setTimeout(() => this.handleOrientationChange(), 300);
                 });
+            }
+
+            showChatApp() {
+                this.landingPage.style.display = 'none';
+                this.chatApp.style.display = 'flex';
             }
 
             autoResizeTextarea() {
@@ -1321,6 +2739,16 @@
                 
                 // Prevent body scroll when sidebar is open
                 document.body.style.overflow = this.sidebarOpen ? 'hidden' : '';
+                
+                // Hide swipe hint when sidebar is open
+                if (this.sidebarOpen) {
+                    this.swipeHint.style.display = 'none';
+                } else if (this.isMobile) {
+                    // Show swipe hint again after a delay
+                    setTimeout(() => {
+                        this.swipeHint.style.display = 'block';
+                    }, 500);
+                }
             }
 
             toggleTheme() {
@@ -1333,6 +2761,146 @@
                 document.documentElement.setAttribute('data-theme', this.currentTheme);
                 const icon = this.themeToggle.querySelector('i');
                 icon.className = this.currentTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            }
+
+            toggleVoiceRecording() {
+                if (!this.recognition) {
+                    this.showToast('Voice recognition is not supported in your browser');
+                    return;
+                }
+                
+                if (this.isRecording) {
+                    this.recognition.stop();
+                } else {
+                    this.recognition.start();
+                }
+            }
+
+            exportChat() {
+                if (this.currentChat.length === 0) {
+                    this.showToast('No chat history to export');
+                    return;
+                }
+                
+                const chatText = this.currentChat.map(msg => {
+                    const timestamp = new Date(msg.timestamp).toLocaleString();
+                    const filesText = msg.files && msg.files.length > 0 
+                        ? `\n[Attached: ${msg.files.map(f => f.name).join(', ')}]` 
+                        : '';
+                    return `[${timestamp}] ${msg.role === 'user' ? 'You' : 'Alex AI'}: ${msg.content}${filesText}`;
+                }).join('\n\n');
+                
+                const blob = new Blob([chatText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `alex-ai-chat-${new Date().toISOString().slice(0, 10)}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showToast('Chat exported successfully');
+            }
+
+            showToast(message) {
+                this.toast.textContent = message;
+                this.toast.classList.add('show');
+                
+                setTimeout(() => {
+                    this.toast.classList.remove('show');
+                }, 3000);
+            }
+
+            openPortfolioModal() {
+                this.portfolioModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            closePortfolioModal() {
+                this.portfolioModal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            handleContactForm() {
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+                
+                // In a real application, you would send this data to a server
+                // For this demo, we'll just show a success message
+                this.showToast(`Thank you, ${name}! Your message has been sent successfully.`);
+                
+                // Reset the form
+                this.contactForm.reset();
+            }
+
+            downloadResumeFile() {
+                // Create a resume content based on the provided information
+                const resumeContent = `
+ALEX PANDIAN M
+Software Developer – Python | AI Enthusiast | Full Stack Developer
+
+CONTACT
+Email: pandialex140@gmail.com
+Phone: +91 93635 34294
+Location: Dindigul, Tamil Nadu, India
+
+SUMMARY
+Fresher Python Developer with strong backend and full-stack skills. Skilled in Django, Flask, React, and REST API development. Hands-on experience with database design, ORM, and AI integration (Gemini API). Passionate about writing clean, scalable code and building real-world projects.
+
+SKILLS
+• Programming Languages: Python, JavaScript, HTML, CSS
+• Frameworks: Django, Flask, React.js, Bootstrap
+• Databases: MySQL, SQLite, PostgreSQL
+• Tools: VS Code, PyCharm, Git, GitHub, OpenCV, MediaPipe, Django ORM, Django REST Framework, Postman, Figma, Render
+
+EDUCATION
+Bachelor of Engineering in Computer Science and Engineering
+University College of Engineering, Dindigul | 2021 – 2025
+CGPA: 7.3
+
+CERTIFICATIONS
+• Python Fullstack Development Training – Codepilot, Chennai (2025)
+  Learned Django, Flask, REST APIs, ORM, and deployment.
+• UI and UX Development Internship – MITA IT Solutions, Dindigul (2024)
+  Learned Frontend, HTML, CSS, Figma tools.
+
+PROJECTS
+AI Resume Analyzer & Debugger (2025)
+• Built an AI-powered resume analysis platform with ATS scoring and improvement suggestions
+• Integrated authentication, OTP verification, and token-based access
+• Handled PDF/DOCX parsing and AI-based grammar feedback
+• Technologies: Python, Django, Gemini API, ORM, Authentication, PyMuPDF, python-docx
+
+Virtual Try-On Clothing E-Commerce (2025)
+• Developed a web app for virtual clothing try-on via webcam feed
+• Implemented real-time overlay and responsive UI with animations
+• Created user/admin login, product management, cart, and order tracking
+• Technologies: Python, OpenCV, Flask, MediaPipe, Django ORM, Bootstrap
+
+ChatGPT Clone (2025)
+• Developed a conversational AI system with Django backend and REST APIs
+• Implemented chat sessions, authentication, and message persistence
+• Integrated Gemini API for AI-driven responses
+• Technologies: JavaScript, Gemini API, REST API, HTML, CSS
+
+SOFT SKILLS
+• Active Listening, Work Ethic, Resilience and Patience, Teamwork and Collaboration
+                `;
+                
+                const blob = new Blob([resumeContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Alex_Pandian_Resume.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showToast('Resume downloaded successfully');
             }
 
             handleOrientationChange() {
@@ -1373,7 +2941,7 @@
                 }
 
                 try {
-                    const response = await this.callGeminiAPI(query, this.selectedFiles);
+                    const response = await this.callAlexAPI(query, this.selectedFiles);
                     this.removeTypingIndicator();
                     this.addMessage('assistant', response);
                 } catch (error) {
@@ -1397,7 +2965,7 @@
                 }
             }
 
-            async callGeminiAPI(query, files = []) {
+            async callAlexAPI(query, files = []) {
                 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
 
                 const parts = [];
@@ -1491,14 +3059,43 @@
                     });
                 }
                 
+                // Add message actions
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'message-actions';
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'message-action-btn';
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                copyBtn.title = 'Copy';
+                copyBtn.addEventListener('click', () => this.copyMessage(content));
+                
+                const speakBtn = document.createElement('button');
+                speakBtn.className = 'message-action-btn';
+                speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                speakBtn.title = 'Speak';
+                speakBtn.addEventListener('click', () => this.speakMessage(content));
+                
+                actionsDiv.appendChild(copyBtn);
+                if (role === 'assistant') {
+                    actionsDiv.appendChild(speakBtn);
+                }
+                
+                // Add timestamp
+                const timestampDiv = document.createElement('div');
+                timestampDiv.className = 'message-timestamp';
+                timestampDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
                 messageDiv.appendChild(avatar);
                 messageDiv.appendChild(contentDiv);
+                contentDiv.appendChild(actionsDiv);
+                contentDiv.appendChild(timestampDiv);
                 this.chatContainer.appendChild(messageDiv);
                 
                 // Remove welcome message if it's the first message
                 const welcomeSection = document.querySelector('.welcome-section');
                 if (welcomeSection && this.currentChat.length === 0) {
                     welcomeSection.remove();
+                    this.swipeHint.style.display = 'none';
                 }
                 
                 this.scrollToBottom();
@@ -1511,6 +3108,32 @@
                     .replace(/\*(.*?)\*/g, '<em>$1</em>')
                     .replace(/`(.*?)`/g, '<code>$1</code>')
                     .replace(/\n/g, '<br>');
+            }
+
+            copyMessage(content) {
+                navigator.clipboard.writeText(content).then(() => {
+                    this.showToast('Message copied to clipboard');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    this.showToast('Failed to copy message');
+                });
+            }
+
+            speakMessage(content) {
+                if ('speechSynthesis' in window) {
+                    // Cancel any ongoing speech
+                    window.speechSynthesis.cancel();
+                    
+                    const utterance = new SpeechSynthesisUtterance(content);
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    
+                    window.speechSynthesis.speak(utterance);
+                    this.showToast('Speaking message...');
+                } else {
+                    this.showToast('Text-to-speech is not supported in your browser');
+                }
             }
 
             showTypingIndicator() {
@@ -1556,7 +3179,7 @@
                     fileItem.innerHTML = `
                         <i class="fas ${file.type.startsWith('image/') ? 'fa-image' : 'fa-file'}"></i>
                         ${this.truncateFilename(file.name)}
-                        <button class="remove-btn" onclick="chat.removeFile(${index})">
+                        <button class="remove-btn" onclick="alexChat.removeFile(${index})">
                             <i class="fas fa-times"></i>
                         </button>
                     `;
@@ -1680,6 +3303,7 @@
                             </div>
                         </div>
                     </div>
+                    <div class="swipe-hint" id="swipeHint"></div>
                 `;
                 
                 // Reattach event listeners
@@ -1691,6 +3315,9 @@
                         this.autoResizeTextarea();
                     });
                 });
+                
+                // Reinitialize swipe hint
+                this.swipeHint = document.getElementById('swipeHint');
                 
                 this.saveChatHistory();
                 
@@ -1704,11 +3331,11 @@
                     timestamp: new Date().toISOString(),
                     chat: this.currentChat
                 };
-                localStorage.setItem('gemini_chat_history', JSON.stringify(history));
+                localStorage.setItem('alex_ai_chat_history', JSON.stringify(history));
             }
 
             loadChatHistory() {
-                const saved = localStorage.getItem('gemini_chat_history');
+                const saved = localStorage.getItem('alex_ai_chat_history');
                 if (saved) {
                     try {
                         const history = JSON.parse(saved);
@@ -1718,6 +3345,7 @@
                             const welcomeSection = document.querySelector('.welcome-section');
                             if (welcomeSection) {
                                 welcomeSection.remove();
+                                this.swipeHint.style.display = 'none';
                             }
                             
                             this.currentChat.forEach(msg => {
@@ -1756,22 +3384,22 @@
             }
         }
 
-        // Initialize the chat when the page loads
+        // Initialize the app when the page loads
         document.addEventListener('DOMContentLoaded', () => {
-            window.chat = new GeminiChat();
+            window.alexChat = new AlexAIApp();
         });
 
         // Handle page visibility changes
         document.addEventListener('visibilitychange', () => {
-            if (document.hidden && window.chat && window.chat.stream) {
-                window.chat.closeCameraModal();
+            if (document.hidden && window.alexChat && window.alexChat.stream) {
+                window.alexChat.closeCameraModal();
             }
         });
 
         // Handle beforeunload
         window.addEventListener('beforeunload', () => {
-            if (window.chat && window.chat.stream) {
-                window.chat.closeCameraModal();
+            if (window.alexChat && window.alexChat.stream) {
+                window.alexChat.closeCameraModal();
             }
         });
     </script>
