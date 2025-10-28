@@ -1,19 +1,20 @@
 class GeminiChat {
     constructor() {
-        this.apiKey = 'AIzaSyAlD7PxnEM5qFNq1JsOPFgT-sbs8TJqipc'; // Your API key
+        this.apiKey = 'AIzaSyAlD7PxnEM5qFNq1JsOPFgT-sbs8TJqipc';
         this.currentChat = [];
         this.isProcessing = false;
         this.isMobile = this.checkMobile();
         
         this.initializeElements();
         this.attachEventListeners();
-        this.loadChatHistory();
         this.setupMobileFeatures();
         this.applyTheme();
+        this.loadChatHistory();
     }
 
     checkMobile() {
-        return window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        return window.innerWidth <= 768 || 
+               /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
     initializeElements() {
@@ -23,17 +24,15 @@ class GeminiChat {
         this.sendBtn = document.getElementById('sendBtn');
         this.fileUpload = document.getElementById('fileUpload');
         this.filePreview = document.getElementById('filePreview');
+        this.fileBtn = document.getElementById('fileBtn');
         this.cameraBtn = document.getElementById('cameraBtn');
         this.clearBtn = document.getElementById('clearBtn');
         this.newChatBtn = document.getElementById('newChatBtn');
         
-        // Response elements
-        this.responseContainer = document.querySelector('.response-container');
-        this.questionAsked = document.querySelector('.question-asked p');
-        this.responseText = document.querySelector('.response-text p');
-        
         // Mobile elements
         this.mobileToggle = document.getElementById('mobileToggle');
+        this.sidebar = document.getElementById('sidebar');
+        this.sidebarOverlay = document.getElementById('sidebarOverlay');
         this.themeToggle = document.getElementById('themeToggle');
         
         // Camera elements
@@ -42,7 +41,7 @@ class GeminiChat {
         this.canvas = document.getElementById('canvas');
         this.captureBtn = document.getElementById('captureBtn');
         this.retakeBtn = document.getElementById('retakeBtn');
-        this.closeModal = document.querySelector('.close');
+        this.closeCamera = document.getElementById('closeCamera');
         
         // State
         this.selectedFiles = [];
@@ -55,14 +54,23 @@ class GeminiChat {
         // Handle virtual keyboard
         this.messageInput.addEventListener('focus', () => {
             if (this.isMobile) {
-                setTimeout(() => this.scrollToBottom(), 300);
+                setTimeout(() => this.scrollToBottom(), 100);
             }
         });
 
-        // Prevent zoom on input focus
+        // Prevent zoom on input focus for iOS
         this.messageInput.addEventListener('touchstart', (e) => {
             e.stopPropagation();
         }, { passive: true });
+
+        // Handle viewport height changes
+        this.setViewportHeight();
+        window.addEventListener('resize', () => this.setViewportHeight());
+    }
+
+    setViewportHeight() {
+        // Set custom property for dynamic viewport height
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     }
 
     attachEventListeners() {
@@ -77,11 +85,11 @@ class GeminiChat {
 
         // Auto-resize textarea
         this.messageInput.addEventListener('input', () => {
-            this.messageInput.style.height = 'auto';
-            this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 120) + 'px';
+            this.autoResizeTextarea();
         });
 
         // File handling
+        this.fileBtn.addEventListener('click', () => this.fileUpload.click());
         this.fileUpload.addEventListener('change', (e) => this.handleFileSelect(e));
         this.cameraBtn.addEventListener('click', () => this.openCamera());
         this.clearBtn.addEventListener('click', () => this.clearFiles());
@@ -89,10 +97,11 @@ class GeminiChat {
         // Camera functionality
         this.captureBtn.addEventListener('click', () => this.capturePhoto());
         this.retakeBtn.addEventListener('click', () => this.retakePhoto());
-        this.closeModal.addEventListener('click', () => this.closeCamera());
+        this.closeCamera.addEventListener('click', () => this.closeCameraModal());
 
         // Mobile sidebar
         this.mobileToggle.addEventListener('click', () => this.toggleSidebar());
+        this.sidebarOverlay.addEventListener('click', () => this.toggleSidebar());
 
         // Theme toggle
         this.themeToggle.addEventListener('click', () => this.toggleTheme());
@@ -100,29 +109,41 @@ class GeminiChat {
         // New chat
         this.newChatBtn.addEventListener('click', () => this.startNewChat());
 
-        // Suggestion chips
-        document.querySelectorAll('.suggestion-chip').forEach(chip => {
-            chip.addEventListener('click', () => {
-                this.messageInput.value = chip.getAttribute('data-prompt');
+        // Quick actions
+        document.querySelectorAll('.action-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const prompt = card.getAttribute('data-prompt');
+                this.messageInput.value = prompt;
                 this.messageInput.focus();
+                this.autoResizeTextarea();
             });
         });
 
         // Close modal on outside click
         this.cameraModal.addEventListener('click', (e) => {
             if (e.target === this.cameraModal) {
-                this.closeCamera();
+                this.closeCameraModal();
             }
+        });
+
+        // Handle orientation changes
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.handleOrientationChange(), 300);
         });
     }
 
+    autoResizeTextarea() {
+        this.messageInput.style.height = 'auto';
+        this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 120) + 'px';
+    }
+
     toggleSidebar() {
-        const sidebar = document.querySelector('.sidebar');
         this.sidebarOpen = !this.sidebarOpen;
-        sidebar.classList.toggle('active');
+        this.sidebar.classList.toggle('active');
+        this.sidebarOverlay.classList.toggle('active');
         
-        // Update toggle icon
-        this.mobileToggle.querySelector('span').textContent = this.sidebarOpen ? '✕' : '☰';
+        // Prevent body scroll when sidebar is open
+        document.body.style.overflow = this.sidebarOpen ? 'hidden' : '';
     }
 
     toggleTheme() {
@@ -133,7 +154,19 @@ class GeminiChat {
 
     applyTheme() {
         document.documentElement.setAttribute('data-theme', this.currentTheme);
-        this.themeToggle.textContent = this.currentTheme === 'light' ? '🌙' : '☀️';
+        const icon = this.themeToggle.querySelector('i');
+        icon.className = this.currentTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+
+    handleOrientationChange() {
+        // Re-initialize camera on orientation change
+        if (this.cameraModal.style.display === 'block') {
+            this.closeCameraModal();
+            setTimeout(() => this.openCamera(), 500);
+        }
+        
+        // Update mobile detection
+        this.isMobile = this.checkMobile();
     }
 
     async sendMessage() {
@@ -146,14 +179,13 @@ class GeminiChat {
 
         this.isProcessing = true;
         this.sendBtn.disabled = true;
+        this.updateSendButton();
 
         // Add user message to chat
         this.addMessage('user', query, this.selectedFiles);
         this.messageInput.value = '';
         this.clearFiles();
-
-        // Reset textarea height
-        this.messageInput.style.height = 'auto';
+        this.autoResizeTextarea();
 
         // Show typing indicator
         this.showTypingIndicator();
@@ -175,28 +207,35 @@ class GeminiChat {
 
         this.isProcessing = false;
         this.sendBtn.disabled = false;
+        this.updateSendButton();
         this.saveChatHistory();
     }
 
-    async callGeminiAPI(query, files = []) {
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.AIzaSyAlD7PxnEM5qFNq1JsOPFgT-sbs8TJqipc}`;
+    updateSendButton() {
+        const icon = this.sendBtn.querySelector('i');
+        if (this.isProcessing) {
+            icon.className = 'fas fa-spinner fa-spin';
+        } else {
+            icon.className = 'fas fa-paper-plane';
+        }
+    }
 
-        // Prepare content parts
+    async callGeminiAPI(query, files = []) {
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
+
         const parts = [];
 
-        // Add text part if query exists
         if (query) {
             parts.push({ text: query });
         }
 
-        // Add file parts
         for (const file of files) {
             if (file.type.startsWith('image/')) {
                 const base64 = await this.fileToBase64(file);
                 parts.push({
                     inline_data: {
                         mime_type: file.type,
-                        data: base64.split(',')[1] // Remove data URL prefix
+                        data: base64.split(',')[1]
                     }
                 });
             } else if (file.type === 'text/plain') {
@@ -211,7 +250,6 @@ class GeminiChat {
             }]
         };
 
-        // Add timeout
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000);
 
@@ -235,7 +273,7 @@ class GeminiChat {
         } catch (error) {
             clearTimeout(timeoutId);
             if (error.name === 'AbortError') {
-                throw new Error('Request timeout. Please check your connection and try again.');
+                throw new Error('Request timeout. Please check your connection.');
             }
             throw error;
         }
@@ -243,11 +281,11 @@ class GeminiChat {
 
     addMessage(role, content, files = []) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${role} fade-in`;
+        messageDiv.className = `message ${role}`;
         
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
-        avatar.textContent = role === 'user' ? 'U' : 'G';
+        avatar.innerHTML = role === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
         
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
@@ -256,7 +294,6 @@ class GeminiChat {
             contentDiv.innerHTML = this.formatMessage(content);
         }
         
-        // Add file previews for user messages
         if (files.length > 0 && role === 'user') {
             files.forEach(file => {
                 if (file.type.startsWith('image/')) {
@@ -268,7 +305,10 @@ class GeminiChat {
                 } else {
                     const fileSpan = document.createElement('span');
                     fileSpan.className = 'file-preview-item';
-                    fileSpan.textContent = `📄 ${this.truncateFilename(file.name)}`;
+                    fileSpan.innerHTML = `
+                        <i class="fas fa-file"></i>
+                        ${this.truncateFilename(file.name)}
+                    `;
                     contentDiv.appendChild(fileSpan);
                 }
             });
@@ -278,10 +318,10 @@ class GeminiChat {
         messageDiv.appendChild(contentDiv);
         this.chatContainer.appendChild(messageDiv);
         
-        // Remove welcome message if it exists
-        const welcomeMessage = document.querySelector('.welcome-message');
-        if (welcomeMessage && this.currentChat.length === 0) {
-            welcomeMessage.remove();
+        // Remove welcome message if it's the first message
+        const welcomeSection = document.querySelector('.welcome-section');
+        if (welcomeSection && this.currentChat.length === 0) {
+            welcomeSection.remove();
         }
         
         this.scrollToBottom();
@@ -289,7 +329,6 @@ class GeminiChat {
     }
 
     formatMessage(content) {
-        // Convert markdown-like formatting to HTML
         return content
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
@@ -303,7 +342,9 @@ class GeminiChat {
         typingDiv.id = 'typing-indicator';
         
         typingDiv.innerHTML = `
-            <div class="avatar">G</div>
+            <div class="avatar">
+                <i class="fas fa-robot"></i>
+            </div>
             <div class="message-content">
                 <div class="typing-indicator">
                     <div class="typing-dot"></div>
@@ -336,16 +377,19 @@ class GeminiChat {
             const fileItem = document.createElement('div');
             fileItem.className = 'file-preview-item';
             fileItem.innerHTML = `
-                ${file.type.startsWith('image/') ? '🖼️' : '📄'} ${this.truncateFilename(file.name)}
-                <button onclick="chat.removeFile(${index})" style="margin-left: 4px; background: none; border: none; color: inherit; cursor: pointer; font-size: 14px; padding: 2px;">×</button>
+                <i class="fas ${file.type.startsWith('image/') ? 'fa-image' : 'fa-file'}"></i>
+                ${this.truncateFilename(file.name)}
+                <button class="remove-btn" onclick="chat.removeFile(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
             `;
             this.filePreview.appendChild(fileItem);
         });
     }
 
     truncateFilename(filename) {
-        if (filename.length > 20 && this.isMobile) {
-            return filename.substring(0, 17) + '...';
+        if (this.isMobile && filename.length > 15) {
+            return filename.substring(0, 12) + '...';
         }
         return filename;
     }
@@ -362,12 +406,12 @@ class GeminiChat {
     }
 
     async openCamera() {
-        this.cameraModal.style.display = 'block';
+        this.cameraModal.style.display = 'flex';
         
         try {
             const constraints = {
                 video: { 
-                    facingMode: this.isMobile ? 'environment' : 'user',
+                    facingMode: 'environment',
                     width: { ideal: 1920 },
                     height: { ideal: 1080 }
                 } 
@@ -375,15 +419,16 @@ class GeminiChat {
             
             this.stream = await navigator.mediaDevices.getUserMedia(constraints);
             this.video.srcObject = this.stream;
-            this.captureBtn.style.display = 'block';
+            this.captureBtn.style.display = 'flex';
             this.retakeBtn.style.display = 'none';
             
+            // Handle mobile orientation
             if (this.isMobile) {
-                this.video.setAttribute('playsinline', '');
+                this.video.setAttribute('playsinline', 'true');
             }
         } catch (error) {
-            alert('Error accessing camera: ' + error.message);
-            this.closeCamera();
+            alert('Camera access denied or not available: ' + error.message);
+            this.closeCameraModal();
         }
     }
 
@@ -397,9 +442,8 @@ class GeminiChat {
             const file = new File([blob], `photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
             this.selectedFiles.push(file);
             this.updateFilePreview();
-            this.closeCamera();
+            this.closeCameraModal();
             
-            // Auto-focus on message input
             setTimeout(() => {
                 this.messageInput.focus();
             }, 300);
@@ -407,11 +451,11 @@ class GeminiChat {
     }
 
     retakePhoto() {
-        this.captureBtn.style.display = 'block';
+        this.captureBtn.style.display = 'flex';
         this.retakeBtn.style.display = 'none';
     }
 
-    closeCamera() {
+    closeCameraModal() {
         this.cameraModal.style.display = 'none';
         if (this.stream) {
             this.stream.getTracks().forEach(track => track.stop());
@@ -421,30 +465,58 @@ class GeminiChat {
     startNewChat() {
         this.currentChat = [];
         this.chatContainer.innerHTML = `
-            <div class="welcome-message">
-                <div class="welcome-icon">🤖</div>
-                <h3>Hello! I'm Gemini AI</h3>
-                <p>How can I help you today? You can ask me anything or upload files for analysis.</p>
-                <div class="suggestions">
-                    <div class="suggestion-chip" data-prompt="Explain quantum computing in simple terms">Explain quantum computing</div>
-                    <div class="suggestion-chip" data-prompt="Write a Python function to calculate fibonacci sequence">Python fibonacci</div>
-                    <div class="suggestion-chip" data-prompt="What are the latest advancements in AI?">Latest AI advancements</div>
-                    <div class="suggestion-chip" data-prompt="Help me plan a healthy meal for the week">Plan healthy meals</div>
+            <div class="welcome-section">
+                <div class="welcome-card">
+                    <div class="welcome-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h1>Hello, How can I help you today?</h1>
+                    <p>Ask anything, upload files, or take photos for analysis</p>
+                    
+                    <div class="quick-actions">
+                        <div class="action-grid">
+                            <div class="action-card" data-prompt="Write a professional email">
+                                <div class="action-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <span>Write Email</span>
+                            </div>
+                            <div class="action-card" data-prompt="Explain quantum computing simply">
+                                <div class="action-icon">
+                                    <i class="fas fa-atom"></i>
+                                </div>
+                                <span>Explain Concept</span>
+                            </div>
+                            <div class="action-card" data-prompt="Write Python code for web scraping">
+                                <div class="action-icon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <span>Code Help</span>
+                            </div>
+                            <div class="action-card" data-prompt="Create a workout plan">
+                                <div class="action-icon">
+                                    <i class="fas fa-dumbbell"></i>
+                                </div>
+                                <span>Fitness Plan</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
         
-        // Reattach event listeners to new suggestion chips
-        document.querySelectorAll('.suggestion-chip').forEach(chip => {
-            chip.addEventListener('click', () => {
-                this.messageInput.value = chip.getAttribute('data-prompt');
+        // Reattach event listeners
+        document.querySelectorAll('.action-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const prompt = card.getAttribute('data-prompt');
+                this.messageInput.value = prompt;
                 this.messageInput.focus();
+                this.autoResizeTextarea();
             });
         });
         
         this.saveChatHistory();
         
-        // Close sidebar on mobile
         if (this.isMobile) {
             this.toggleSidebar();
         }
@@ -466,7 +538,11 @@ class GeminiChat {
                 this.currentChat = history.chat || [];
                 
                 if (this.currentChat.length > 0) {
-                    this.chatContainer.innerHTML = '';
+                    const welcomeSection = document.querySelector('.welcome-section');
+                    if (welcomeSection) {
+                        welcomeSection.remove();
+                    }
+                    
                     this.currentChat.forEach(msg => {
                         this.addMessage(msg.role, msg.content, msg.files || []);
                     });
@@ -511,15 +587,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // Handle page visibility changes
 document.addEventListener('visibilitychange', () => {
     if (document.hidden && window.chat && window.chat.stream) {
-        window.chat.closeCamera();
+        window.chat.closeCameraModal();
     }
 });
 
-// Handle window resize
-window.addEventListener('resize', () => {
-    if (window.chat) {
-        window.chat.isMobile = window.chat.checkMobile();
+// Handle beforeunload
+window.addEventListener('beforeunload', () => {
+    if (window.chat && window.chat.stream) {
+        window.chat.closeCameraModal();
     }
 });
-
-
