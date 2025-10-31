@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Alex Pandian - Software Developer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -70,10 +71,10 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.5;
+            line-height: 1.6;
             overflow-x: hidden;
             transition: var(--transition);
         }
@@ -151,8 +152,8 @@
         }
 
         .landing-avatar {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             background: white;
             margin: 0 auto;
@@ -161,17 +162,31 @@
             justify-content: center;
             font-size: 48px;
             color: var(--primary-color);
-            box-shadow: var(--shadow-xl);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             position: relative;
             overflow: hidden;
-            border: 4px solid white;
+            border: 5px solid white;
             cursor: pointer;
             transition: var(--transition);
+            animation: avatarEntrance 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            opacity: 0;
+            transform: scale(0.8) translateY(30px);
+        }
+
+        @keyframes avatarEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .landing-avatar:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(66, 133, 244, 0.4);
+            box-shadow: 0 0 40px rgba(66, 133, 244, 0.4);
         }
 
         .landing-avatar img {
@@ -203,34 +218,107 @@
             100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
 
+        .landing-title-container {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
         .landing-title {
-            font-size: 36px;
-            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            font-size: 64px;
+            font-weight: 900;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-align: center;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            animation: fadeInUp 0.8s ease;
+            position: relative;
+            display: inline-block;
+            animation: titleEntrance 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+            opacity: 0;
+            transform: translateY(30px);
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes titleEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .landing-title .letter {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(30px) rotateZ(-5deg);
+            animation: letterFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes letterFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) rotateZ(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotateZ(0);
+            }
+        }
+
+        .landing-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), var(--secondary-color), transparent);
+            border-radius: 2px;
+            animation: expandWidth 1.5s ease-out 1.5s forwards;
+            transform-origin: center;
+        }
+
+        @keyframes expandWidth {
+            0% { transform: translateX(-50%) scaleX(0); }
+            100% { transform: translateX(-50%) scaleX(1); }
         }
 
         .landing-subtitle {
-            font-size: 18px;
+            font-family: 'Crimson Text', serif;
+            font-size: 22px;
             color: var(--text-secondary);
             margin-bottom: 40px;
             text-align: center;
             max-width: 600px;
-            animation: fadeInUp 0.8s ease 0.2s both;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            animation: fadeInUp 0.8s ease 0.6s both;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+        }
+
+        .landing-subtitle .highlight {
+            color: var(--primary-color);
+            font-weight: 600;
+            position: relative;
+        }
+
+        .landing-subtitle .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: expandWidth 1s ease-out 1.2s forwards;
         }
 
         .landing-buttons {
@@ -239,11 +327,11 @@
             gap: 20px;
             justify-content: center;
             margin-bottom: 40px;
-            animation: fadeInUp 0.8s ease 0.4s both;
+            animation: fadeInUp 0.8s ease 0.8s both;
         }
 
         .landing-button {
-            padding: 16px 32px;
+            padding: 18px 36px;
             border-radius: var(--radius-lg);
             font-size: 18px;
             font-weight: 600;
@@ -252,12 +340,15 @@
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             position: relative;
             overflow: hidden;
-            min-width: 200px;
+            min-width: 220px;
             justify-content: center;
             cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .landing-button::before {
@@ -278,7 +369,7 @@
 
         .landing-button:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
         .portfolio-btn {
@@ -327,7 +418,7 @@
             color: var(--text-secondary);
             position: relative;
             z-index: 2;
-            animation: fadeInUp 0.8s ease 0.6s both;
+            animation: fadeInUp 0.8s ease 1s both;
         }
 
         .social-links {
@@ -338,8 +429,8 @@
         }
 
         .social-link {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: white;
             display: flex;
@@ -348,11 +439,14 @@
             color: var(--primary-color);
             transition: var(--transition);
             box-shadow: var(--shadow-md);
+            font-size: 20px;
         }
 
         .social-link:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            background: var(--primary-color);
+            color: white;
         }
 
         .bg-shapes {
@@ -372,29 +466,38 @@
         }
 
         .shape-1 {
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
             background: var(--primary-color);
-            top: -100px;
-            right: -100px;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .shape-2 {
-            width: 200px;
-            height: 200px;
-            background: var(--secondary-color);
-            bottom: -50px;
-            left: -50px;
+            top: -150px;
+            right: -150px;
             animation: float 8s ease-in-out infinite;
         }
 
+        .shape-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--secondary-color);
+            bottom: -100px;
+            left: -100px;
+            animation: float 10s ease-in-out infinite;
+        }
+
         .shape-3 {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
             background: var(--accent-color);
             top: 50%;
             left: 10%;
+            animation: float 9s ease-in-out infinite;
+        }
+
+        .shape-4 {
+            width: 150px;
+            height: 150px;
+            background: var(--project-color);
+            top: 20%;
+            right: 15%;
             animation: float 7s ease-in-out infinite;
         }
 
@@ -414,7 +517,7 @@
             background: var(--primary-color);
             border-radius: 50%;
             opacity: 0.2;
-            animation: float-particle 15s infinite linear;
+            animation: float-particle 20s infinite linear;
         }
 
         @keyframes float-particle {
@@ -452,7 +555,7 @@
         }
 
         .glow-effect {
-            box-shadow: 0 0 20px rgba(66, 133, 244, 0.5);
+            box-shadow: 0 0 30px rgba(66, 133, 244, 0.5);
         }
 
         .interactive-cursor {
@@ -1456,7 +1559,7 @@
 
         .portfolio-hero {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            padding: 60px 40px;
+            padding: 80px 40px;
             color: white;
             text-align: center;
             position: relative;
@@ -1491,8 +1594,8 @@
         }
 
         .portfolio-avatar {
-            width: 140px;
-            height: 140px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             background: white;
             margin: 0 auto 30px;
@@ -1501,17 +1604,17 @@
             justify-content: center;
             font-size: 48px;
             color: var(--primary-color);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             position: relative;
             z-index: 1;
             overflow: hidden;
-            border: 5px solid white;
+            border: 6px solid white;
             transition: var(--transition);
         }
 
         .portfolio-avatar:hover {
             transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
 
         .portfolio-avatar img {
@@ -1522,8 +1625,9 @@
         }
 
         .portfolio-hero h1 {
-            font-size: 42px;
-            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 900;
             margin-bottom: 12px;
             position: relative;
             z-index: 1;
@@ -1531,7 +1635,7 @@
         }
 
         .portfolio-hero p {
-            font-size: 20px;
+            font-size: 22px;
             opacity: 0.95;
             max-width: 600px;
             margin: 0 auto;
@@ -1541,11 +1645,11 @@
         }
 
         .portfolio-content {
-            padding: 50px 40px;
+            padding: 60px 40px;
         }
 
         .portfolio-section {
-            margin-bottom: 50px;
+            margin-bottom: 60px;
             position: relative;
         }
 
@@ -1561,9 +1665,10 @@
         }
 
         .portfolio-section h2 {
-            font-size: 28px;
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             color: var(--text-primary);
             display: flex;
             align-items: center;
@@ -1584,8 +1689,8 @@
             color: var(--primary-color);
             font-size: 24px;
             background: var(--bg-tertiary);
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1595,14 +1700,14 @@
 
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 25px;
         }
 
         .skill-item {
             background: var(--bg-secondary);
             border-radius: var(--radius-lg);
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             transition: var(--transition);
             border: 1px solid var(--border-light);
@@ -1627,15 +1732,15 @@
         }
 
         .skill-item:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             background: var(--bg-tertiary);
         }
 
         .skill-icon {
-            font-size: 32px;
+            font-size: 36px;
             color: var(--primary-color);
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             transition: var(--transition);
         }
 
@@ -1645,15 +1750,15 @@
 
         .skill-name {
             font-weight: 600;
-            font-size: 15px;
+            font-size: 16px;
             color: var(--text-primary);
         }
 
         .experience-item, .project-item {
             background: var(--bg-secondary);
             border-radius: var(--radius-lg);
-            padding: 25px;
-            margin-bottom: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
             border-left: 4px solid var(--primary-color);
             transition: var(--transition);
             position: relative;
@@ -1672,20 +1777,20 @@
         }
 
         .experience-item:hover, .project-item:hover {
-            transform: translateX(8px);
-            box-shadow: var(--shadow-lg);
+            transform: translateX(10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
         .experience-header, .project-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             align-items: flex-start;
         }
 
         .experience-title, .project-title {
             font-weight: 700;
-            font-size: 20px;
+            font-size: 22px;
             color: var(--text-primary);
             flex: 1;
         }
@@ -1695,13 +1800,13 @@
             font-size: 14px;
             font-weight: 600;
             background: var(--bg-tertiary);
-            padding: 4px 12px;
+            padding: 6px 12px;
             border-radius: 20px;
         }
 
         .experience-company, .project-description {
             color: var(--text-secondary);
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-size: 16px;
             line-height: 1.6;
         }
@@ -1745,7 +1850,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: white;
             border-radius: var(--radius-md);
@@ -1775,7 +1880,7 @@
 
         .project-link:hover {
             transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         .project-link.secondary {
@@ -1809,7 +1914,7 @@
 
         .contact-item:hover {
             transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             background: var(--bg-tertiary);
         }
 
@@ -1822,8 +1927,8 @@
         .contact-form {
             background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
             border-radius: var(--radius-lg);
-            padding: 35px;
-            margin-top: 25px;
+            padding: 40px;
+            margin-top: 30px;
             border: 1px solid var(--border-light);
             position: relative;
             overflow: hidden;
@@ -1841,9 +1946,10 @@
         }
 
         .contact-form h3 {
-            font-size: 24px;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             color: var(--text-primary);
             position: relative;
         }
@@ -1919,11 +2025,11 @@
 
         .form-submit:hover {
             transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         .portfolio-footer {
-            padding: 30px 40px;
+            padding: 40px;
             background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
             display: flex;
             justify-content: space-between;
@@ -1935,7 +2041,7 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 25px;
+            padding: 14px 30px;
             background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: white;
             border-radius: var(--radius-md);
@@ -1964,7 +2070,7 @@
 
         .download-btn:hover {
             transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         .social-links {
@@ -1973,8 +2079,8 @@
         }
 
         .social-link {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: var(--bg-primary);
             display: flex;
@@ -1987,7 +2093,7 @@
 
         .social-link:hover {
             transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             background: var(--primary-color);
             color: white;
         }
@@ -1995,11 +2101,11 @@
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
             .landing-title {
-                font-size: 28px;
+                font-size: 48px;
             }
             
             .landing-subtitle {
-                font-size: 16px;
+                font-size: 18px;
                 white-space: normal;
                 overflow: visible;
                 text-overflow: unset;
@@ -2016,8 +2122,8 @@
             }
             
             .landing-avatar {
-                width: 120px;
-                height: 120px;
+                width: 160px;
+                height: 160px;
             }
             
             .container {
@@ -2150,23 +2256,23 @@
             }
             
             .portfolio-hero {
-                padding: 40px 20px;
+                padding: 60px 20px;
             }
             
             .portfolio-hero h1 {
-                font-size: 28px;
+                font-size: 36px;
             }
             
             .portfolio-hero p {
-                font-size: 16px;
+                font-size: 18px;
             }
             
             .portfolio-content {
-                padding: 30px 20px;
+                padding: 40px 20px;
             }
             
             .portfolio-section h2 {
-                font-size: 22px;
+                font-size: 24px;
             }
             
             .skills-grid {
@@ -2186,22 +2292,22 @@
             }
             
             .contact-form {
-                padding: 25px 20px;
+                padding: 30px 20px;
             }
         }
 
         @media (max-width: 480px) {
             .landing-title {
-                font-size: 24px;
+                font-size: 36px;
             }
             
             .landing-subtitle {
-                font-size: 14px;
+                font-size: 16px;
             }
             
             .landing-avatar {
-                width: 100px;
-                height: 100px;
+                width: 140px;
+                height: 140px;
             }
             
             .chat-container {
@@ -2229,15 +2335,15 @@
             }
             
             .portfolio-hero h1 {
-                font-size: 24px;
+                font-size: 32px;
             }
             
             .portfolio-content {
-                padding: 20px 15px;
+                padding: 30px 15px;
             }
             
             .contact-form {
-                padding: 20px 15px;
+                padding: 25px 15px;
             }
         }
 
@@ -2315,6 +2421,50 @@
             0%, 100% { opacity: 0.3; }
             50% { opacity: 0.7; }
         }
+
+        /* Enhanced animations for landing page */
+        @keyframes letterWave {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .landing-title .letter:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        .landing-title .letter:nth-child(even) {
+            animation-delay: 0.2s;
+        }
+
+        /* Enhanced particle effects */
+        .particle-special {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: particleFloat 10s infinite ease-in-out;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.6;
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-10px) translateX(-10px);
+                opacity: 0.4;
+            }
+            75% {
+                transform: translateY(-30px) translateX(5px);
+                opacity: 0.7;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2332,8 +2482,12 @@
                 <div class="landing-avatar interactive-cursor" id="landingAvatar">
                     <img src="https://z-cdn-media.chatglm.cn/files/6d5790d4-11b4-47f4-a549-4e754a42c890_WhatsApp%20Image%202025-10-28%20at%2011.36.06_bf97138f.jpg?auth_key=1793167747-9c8092ed052d4608948f02c39a6e0953-0-3da9722bb1339cf2927b1ca9932bf1ae" alt="Alex Pandian" class="profile-image">
                 </div>
-                <h2 class="landing-title">Software Developer - Python</h2>
-                <p>Passionate about creating innovative AI-powered applications and solving complex problems with clean, efficient code.</p>
+                <div class="landing-title-container">
+                    <h2 class="landing-title" id="animatedName">Alex Pandian</h2>
+                </div>
+                <p class="landing-subtitle">
+                    <span class="highlight">Software Developer</span> specializing in Python, Django, and AI integration
+                </p>
                 
                 <div class="landing-buttons">
                     <a href="#" class="landing-button portfolio-btn" id="portfolioBtn">
@@ -2357,7 +2511,7 @@
         </div>
         
         <div class="landing-footer">
-            <p>&copy; 2025 Alex Pandian. created by Alex .</p>
+            <p>&copy; 2025 Alex Pandian. Created with passion and code.</p>
             <div class="social-links">
                 <a href="https://www.linkedin.com/in/alex-pandian-7b0b8421a/" target="_blank" class="social-link" title="LinkedIn">
                     <i class="fab fa-linkedin"></i>
@@ -2375,6 +2529,7 @@
             <div class="shape shape-1"></div>
             <div class="shape shape-2"></div>
             <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
         </div>
 
         <div class="floating-particles" id="particles"></div>
@@ -2435,7 +2590,7 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="header-center">
-                    <h1>Alex AI (Powered By Google's Gemimi)</h1>
+                    <h1>Alex AI (Powered By Google's Gemini)</h1>
                     <div class="status-indicator">
                         <!-- <div class="status-dot"></div> -->
                         <!-- <span>AI is thinking...</span> -->
@@ -2777,7 +2932,7 @@
                             </div>
                             <div class="contact-item">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span>chennai (Native 'Madurai'), Tamil Nadu, India</span>
+                                <span>Chennai (Native 'Madurai'), Tamil Nadu, India</span>
                             </div>
                         </div>
                         
@@ -2850,6 +3005,8 @@
                 this.loadChatHistory();
                 this.initializeVoiceRecognition();
                 this.createParticles();
+                this.animateName();
+                this.createSpecialParticles();
             }
 
             checkMobile() {
@@ -2864,6 +3021,7 @@
                 this.portfolioBtn = document.getElementById('portfolioBtn');
                 this.chatBtn = document.getElementById('chatBtn');
                 this.landingAvatar = document.getElementById('landingAvatar');
+                this.animatedName = document.getElementById('animatedName');
                 
                 // Core elements
                 this.chatContainer = document.getElementById('chatContainer');
@@ -2912,16 +3070,62 @@
                 this.currentTheme = localStorage.getItem('theme') || 'light';
             }
 
+            animateName() {
+                // Enhanced name animation with wave effect
+                const nameText = this.animatedName.textContent;
+                this.animatedName.innerHTML = '';
+                
+                // Create a span for each letter with enhanced animation
+                for (let i = 0; i < nameText.length; i++) {
+                    const letterSpan = document.createElement('span');
+                    letterSpan.textContent = nameText[i];
+                    letterSpan.style.display = 'inline-block';
+                    letterSpan.style.opacity = '0';
+                    letterSpan.style.transform = 'translateY(30px) rotateZ(-5deg)';
+                    letterSpan.style.animation = `letterFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.05 * i}s forwards`;
+                    
+                    // Add wave effect after initial animation
+                    setTimeout(() => {
+                        letterSpan.style.animation = `letterWave 2s ease-in-out ${0.1 * i}s infinite`;
+                    }, 1000 + (0.05 * i * 1000));
+                    
+                    this.animatedName.appendChild(letterSpan);
+                }
+            }
+
+            createSpecialParticles() {
+                // Create special floating particles around the name
+                const particlesContainer = document.querySelector('.landing-title-container');
+                const particleCount = 8;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle-special';
+                    
+                    // Random position around the title
+                    const angle = (360 / particleCount) * i;
+                    const distance = 100 + Math.random() * 50;
+                    const x = Math.cos(angle * Math.PI / 180) * distance;
+                    const y = Math.sin(angle * Math.PI / 180) * distance;
+                    
+                    particle.style.left = `calc(50% + ${x}px)`;
+                    particle.style.top = `calc(50% + ${y}px)`;
+                    particle.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+
             createParticles() {
                 const particlesContainer = document.getElementById('particles');
-                const particleCount = 20;
+                const particleCount = 25;
                 
                 for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'particle';
                     
                     // Random size
-                    const size = Math.random() * 5 + 2;
+                    const size = Math.random() * 6 + 2;
                     particle.style.width = `${size}px`;
                     particle.style.height = `${size}px`;
                     
@@ -2930,8 +3134,8 @@
                     particle.style.left = `${posX}%`;
                     
                     // Random animation delay and duration
-                    const delay = Math.random() * 15;
-                    const duration = Math.random() * 10 + 15;
+                    const delay = Math.random() * 20;
+                    const duration = Math.random() * 15 + 15;
                     particle.style.animationDelay = `${delay}s`;
                     particle.style.animationDuration = `${duration}s`;
                     
@@ -3072,7 +3276,7 @@
                     setTimeout(() => {
                         this.landingAvatar.classList.remove('glow-effect');
                     }, 1000);
-                    this.showToast('Hello! I\'m Alex Pandian, a Python Developer');
+                    this.showToast('Hello! I\'m Alex Pandian, a passionate Python Developer');
                 });
                 
                 // Theme toggle button on landing page
@@ -3725,7 +3929,7 @@ SOFT SKILLS
                             <div class="welcome-icon">
                                 <i class="fas fa-robot"></i>
                             </div>
-                            <1>Hello, How can I help you today?</h1>
+                            <h1>Hello, How can I help you today?</h1>
                             <p>Ask anything, upload files, or take photos for analysis</p>
                             
                             <div class="quick-actions">
@@ -3860,5 +4064,3 @@ SOFT SKILLS
     </script>
 </body>
 </html>
-
-
