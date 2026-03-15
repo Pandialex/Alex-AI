@@ -1,6 +1,6 @@
 class GeminiChat {
     constructor() {
-        this.apiKey = 'AIzaSyAlD7PxnEM5qFNq1JsOPFgT-sbs8TJqipc';
+        this.apiKey = 'AIzaSyA4-wl-UG_Y7ojAcvxfkfPr-q7ysGYWKmo';
         this.currentChat = [];
         this.isProcessing = false;
         this.isMobile = this.checkMobile();
