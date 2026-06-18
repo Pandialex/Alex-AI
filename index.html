@@ -1139,6 +1139,97 @@
             box-shadow: var(--shadow-lg);
         }
 
+        .message-content p { margin: 0 0 8px; }
+
+        .message-content .msg-heading {
+            margin: 14px 0 8px;
+            line-height: 1.3;
+            font-weight: 600;
+        }
+        .message-content h1.msg-heading { font-size: 1.3em; }
+        .message-content h2.msg-heading { font-size: 1.15em; }
+        .message-content h3.msg-heading { font-size: 1.05em; }
+
+        .message-content ul,
+        .message-content ol {
+            margin: 8px 0;
+            padding-left: 22px;
+        }
+        .message-content li { margin: 4px 0; }
+
+        .message-content a {
+            color: var(--primary-color);
+            text-decoration: underline;
+            word-break: break-word;
+        }
+
+        .message-content .inline-code {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.88em;
+            background: var(--bg-tertiary);
+            color: var(--accent-color);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .code-block {
+            margin: 12px 0;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            background: #1e1e2e;
+        }
+
+        .code-block-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 12px;
+            background: #181825;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            min-height: 34px;
+        }
+
+        .code-block-header .code-lang {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #9aa0b3;
+            font-weight: 600;
+        }
+
+        .code-copy-btn {
+            margin-left: auto;
+            background: rgba(255,255,255,0.08);
+            border: none;
+            color: #c5c8d6;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition-fast);
+        }
+        .code-copy-btn:hover {
+            background: rgba(255,255,255,0.18);
+            color: #fff;
+        }
+
+        .code-block pre {
+            margin: 0;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+        .code-block code {
+            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e4e6f0;
+            white-space: pre;
+        }
+
         .message-actions {
             display: flex;
             gap: 8px;
@@ -2991,7 +3082,19 @@
     <script>
         class AlexAIApp {
             constructor() {
-                this.apiKey = 'AIzaSyBgFYVGwV6UbGiyCGptcd7MK-yCV-LoVGY';
+                // ===== Groq API configuration =====
+                // Get a FREE API key at https://console.groq.com/keys and paste it below.
+                this.apiKey = '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';
+                this.apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
+                // Fast, high-quality text model
+                this.textModel = 'llama-3.3-70b-versatile';
+                // Vision-capable model (used automatically when an image is attached)
+                this.visionModel = 'meta-llama/llama-4-scout-17b-16e-instruct';
+                this.systemPrompt = "You are Alex AI, a friendly, knowledgeable and helpful assistant. " +
+                    "Answer clearly and concisely. Use Markdown for formatting: **bold** for emphasis, " +
+                    "bullet or numbered lists where helpful, and fenced code blocks (```language) for code. " +
+                    "When given an image or file, analyze it carefully before responding.";
+
                 this.currentChat = [];
                 this.isProcessing = false;
                 this.isMobile = this.checkMobile();
@@ -3627,42 +3730,69 @@ SOFT SKILLS
             }
 
             async callAlexAPI(query, files = []) {
-                const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
-
-                const parts = [];
-
-                if (query) {
-                    parts.push({ text: query });
+                if (!this.apiKey || this.apiKey === 'YOUR_GROQ_API_KEY') {
+                    throw new Error('Missing Groq API key. Add your key in the code (get a free one at console.groq.com/keys).');
                 }
 
-                for (const file of files) {
-                    if (file.type.startsWith('image/')) {
-                        const base64 = await this.fileToBase64(file);
-                        parts.push({
-                            inline_data: {
-                                mime_type: file.type,
-                                data: base64.split(',')[1]
-                            }
+                const hasImages = files.some(f => f.type && f.type.startsWith('image/'));
+                const model = hasImages ? this.visionModel : this.textModel;
+
+                // Build the multimodal content for the current user message
+                let userContent;
+                if (hasImages) {
+                    userContent = [];
+                    if (query) userContent.push({ type: 'text', text: query });
+                    for (const file of files) {
+                        if (file.type && file.type.startsWith('image/')) {
+                            const base64 = await this.fileToBase64(file);
+                            userContent.push({ type: 'image_url', image_url: { url: base64 } });
+                        } else if (file.type === 'text/plain') {
+                            const text = await this.readTextFile(file);
+                            userContent.push({ type: 'text', text: `File: ${file.name}\nContent: ${text}` });
+                        }
+                    }
+                } else {
+                    let textContent = query || '';
+                    for (const file of files) {
+                        if (file.type === 'text/plain') {
+                            const text = await this.readTextFile(file);
+                            textContent += `\n\nFile: ${file.name}\nContent: ${text}`;
+                        }
+                    }
+                    userContent = textContent;
+                }
+
+                // Build messages with recent conversation history for context (ChatGPT-like memory).
+                // The current user message is already in this.currentChat, so exclude it here.
+                const messages = [{ role: 'system', content: this.systemPrompt }];
+                const past = this.currentChat.slice(0, -1).slice(-10);
+                for (const m of past) {
+                    if (m && m.content) {
+                        messages.push({
+                            role: m.role === 'user' ? 'user' : 'assistant',
+                            content: m.content
                         });
-                    } else if (file.type === 'text/plain') {
-                        const text = await this.readTextFile(file);
-                        parts.push({ text: `File: ${file.name}\nContent: ${text}` });
                     }
                 }
+                messages.push({ role: 'user', content: userContent });
 
                 const requestBody = {
-                    contents: [{
-                        parts: parts
-                    }]
+                    model: model,
+                    messages: messages,
+                    temperature: 0.7,
+                    max_tokens: 2048
                 };
 
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 30000);
 
                 try {
-                    const response = await fetch(API_URL, {
+                    const response = await fetch(this.apiUrl, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${this.apiKey}`
+                        },
                         body: JSON.stringify(requestBody),
                         signal: controller.signal
                     });
@@ -3670,12 +3800,18 @@ SOFT SKILLS
                     clearTimeout(timeoutId);
 
                     if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error?.message || 'API request failed');
+                        let message = 'API request failed';
+                        try {
+                            const errorData = await response.json();
+                            message = errorData.error?.message || message;
+                        } catch (e) {
+                            message = `${response.status} ${response.statusText}`;
+                        }
+                        throw new Error(message);
                     }
 
                     const data = await response.json();
-                    return data.candidates[0].content.parts[0].text;
+                    return data.choices?.[0]?.message?.content || 'No response received.';
                 } catch (error) {
                     clearTimeout(timeoutId);
                     if (error.name === 'AbortError') {
@@ -3702,13 +3838,16 @@ SOFT SKILLS
                 
                 if (files.length > 0 && role === 'user') {
                     files.forEach(file => {
-                        if (file.type.startsWith('image/')) {
+                        // Files restored from localStorage lose their Blob data and type,
+                        // so only render previews for live File/Blob objects.
+                        const isLiveFile = file instanceof Blob;
+                        if (isLiveFile && file.type && file.type.startsWith('image/')) {
                             const img = document.createElement('img');
                             img.src = URL.createObjectURL(file);
                             img.alt = file.name;
                             img.loading = 'lazy';
                             contentDiv.appendChild(img);
-                        } else {
+                        } else if (isLiveFile) {
                             const fileSpan = document.createElement('span');
                             fileSpan.className = 'file-preview-item';
                             fileSpan.innerHTML = `
@@ -3763,12 +3902,88 @@ SOFT SKILLS
                 this.currentChat.push({ role, content, files, timestamp: new Date().toISOString() });
             }
 
+            escapeHtml(text) {
+                return String(text)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+            }
+
             formatMessage(content) {
-                return content
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                    .replace(/`(.*?)`/g, '<code>$1</code>')
-                    .replace(/\n/g, '<br>');
+                if (content == null) return '';
+
+                // 1) Extract fenced code blocks first so their content is never altered.
+                const codeBlocks = [];
+                let text = content.replace(/```(\w+)?\n?([\s\S]*?)```/g, (match, lang, code) => {
+                    const language = lang ? lang.toLowerCase() : '';
+                    const escaped = this.escapeHtml(code.replace(/\n$/, ''));
+                    const langLabel = language ? `<span class="code-lang">${language}</span>` : '';
+                    const block =
+                        `<div class="code-block">` +
+                            `<div class="code-block-header">${langLabel}` +
+                                `<button class="code-copy-btn" onclick="alexChat.copyCode(this)"><i class="fas fa-copy"></i> Copy</button>` +
+                            `</div>` +
+                            `<pre><code>${escaped}</code></pre>` +
+                        `</div>`;
+                    codeBlocks.push(block);
+                    return `\u0000CODEBLOCK${codeBlocks.length - 1}\u0000`;
+                });
+
+                // 2) Escape the remaining text, then apply inline markdown.
+                text = this.escapeHtml(text);
+
+                text = text
+                    .replace(/`([^`]+?)`/g, '<code class="inline-code">$1</code>')
+                    .replace(/\*\*([^*]+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/(^|[^*])\*([^*\n]+?)\*(?!\*)/g, '$1<em>$2</em>')
+                    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+                // 3) Headings and lists, line by line.
+                const lines = text.split('\n');
+                let html = '';
+                let listType = null;
+                const closeList = () => {
+                    if (listType) { html += `</${listType}>`; listType = null; }
+                };
+
+                for (const line of lines) {
+                    const ulMatch = line.match(/^\s*[-*+]\s+(.*)$/);
+                    const olMatch = line.match(/^\s*\d+\.\s+(.*)$/);
+                    const hMatch = line.match(/^\s*(#{1,3})\s+(.*)$/);
+
+                    if (ulMatch) {
+                        if (listType !== 'ul') { closeList(); html += '<ul>'; listType = 'ul'; }
+                        html += `<li>${ulMatch[1]}</li>`;
+                    } else if (olMatch) {
+                        if (listType !== 'ol') { closeList(); html += '<ol>'; listType = 'ol'; }
+                        html += `<li>${olMatch[1]}</li>`;
+                    } else if (hMatch) {
+                        closeList();
+                        const level = hMatch[1].length;
+                        html += `<h${level} class="msg-heading">${hMatch[2]}</h${level}>`;
+                    } else if (line.trim() === '') {
+                        closeList();
+                        html += '';
+                    } else {
+                        closeList();
+                        html += line + '<br>';
+                    }
+                }
+                closeList();
+
+                // 4) Restore code blocks.
+                html = html.replace(/\u0000CODEBLOCK(\d+)\u0000(<br>)?/g, (m, i) => codeBlocks[Number(i)]);
+
+                return html;
+            }
+
+            copyCode(btn) {
+                const code = btn.closest('.code-block').querySelector('code').innerText;
+                navigator.clipboard.writeText(code).then(() => {
+                    const original = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                    setTimeout(() => { btn.innerHTML = original; }, 1500);
+                }).catch(() => this.showToast('Failed to copy code'));
             }
 
             copyMessage(content) {
