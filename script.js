@@ -1,6 +1,13 @@
 class GeminiChat {
     constructor() {
-        this.apiKey = 'AIzaSyA4-wl-UG_Y7ojAcvxfkfPr-q7ysGYWKmo';
+        // ===== Groq API configuration =====
+        // Get a FREE API key at https://console.groq.com/keys and paste it below.
+        this.apiKey = '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';
+        this.apiUrl = 'https://api.groq.com/openai/v1/chat/completions';
+        this.textModel = 'llama-3.3-70b-versatile';
+        this.visionModel = 'meta-llama/llama-4-scout-17b-16e-instruct';
+        this.systemPrompt = 'You are a friendly, knowledgeable and helpful assistant. ' +
+            'Answer clearly and concisely, using Markdown (lists, **bold**, and fenced code blocks) where helpful.';
         this.currentChat = [];
         this.isProcessing = false;
         this.isMobile = this.checkMobile();
@@ -221,42 +228,63 @@ class GeminiChat {
     }
 
     async callGeminiAPI(query, files = []) {
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${this.apiKey}`;
-
-        const parts = [];
-
-        if (query) {
-            parts.push({ text: query });
+        if (!this.apiKey || this.apiKey === 'YOUR_GROQ_API_KEY') {
+            throw new Error('Missing Groq API key. Add your key in the code (get a free one at console.groq.com/keys).');
         }
 
-        for (const file of files) {
-            if (file.type.startsWith('image/')) {
-                const base64 = await this.fileToBase64(file);
-                parts.push({
-                    inline_data: {
-                        mime_type: file.type,
-                        data: base64.split(',')[1]
-                    }
-                });
-            } else if (file.type === 'text/plain') {
-                const text = await this.readTextFile(file);
-                parts.push({ text: `File: ${file.name}\nContent: ${text}` });
+        const hasImages = files.some(f => f.type && f.type.startsWith('image/'));
+        const model = hasImages ? this.visionModel : this.textModel;
+
+        let userContent;
+        if (hasImages) {
+            userContent = [];
+            if (query) userContent.push({ type: 'text', text: query });
+            for (const file of files) {
+                if (file.type && file.type.startsWith('image/')) {
+                    const base64 = await this.fileToBase64(file);
+                    userContent.push({ type: 'image_url', image_url: { url: base64 } });
+                } else if (file.type === 'text/plain') {
+                    const text = await this.readTextFile(file);
+                    userContent.push({ type: 'text', text: `File: ${file.name}\nContent: ${text}` });
+                }
+            }
+        } else {
+            let textContent = query || '';
+            for (const file of files) {
+                if (file.type === 'text/plain') {
+                    const text = await this.readTextFile(file);
+                    textContent += `\n\nFile: ${file.name}\nContent: ${text}`;
+                }
+            }
+            userContent = textContent;
+        }
+
+        const messages = [{ role: 'system', content: this.systemPrompt }];
+        const past = this.currentChat.slice(0, -1).slice(-10);
+        for (const m of past) {
+            if (m && m.content) {
+                messages.push({ role: m.role === 'user' ? 'user' : 'assistant', content: m.content });
             }
         }
+        messages.push({ role: 'user', content: userContent });
 
         const requestBody = {
-            contents: [{
-                parts: parts
-            }]
+            model: model,
+            messages: messages,
+            temperature: 0.7,
+            max_tokens: 2048
         };
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000);
 
         try {
-            const response = await fetch(API_URL, {
+            const response = await fetch(this.apiUrl, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${this.apiKey}`
+                },
                 body: JSON.stringify(requestBody),
                 signal: controller.signal
             });
@@ -264,12 +292,18 @@ class GeminiChat {
             clearTimeout(timeoutId);
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error?.message || 'API request failed');
+                let message = 'API request failed';
+                try {
+                    const errorData = await response.json();
+                    message = errorData.error?.message || message;
+                } catch (e) {
+                    message = `${response.status} ${response.statusText}`;
+                }
+                throw new Error(message);
             }
 
             const data = await response.json();
-            return data.candidates[0].content.parts[0].text;
+            return data.choices?.[0]?.message?.content || 'No response received.';
         } catch (error) {
             clearTimeout(timeoutId);
             if (error.name === 'AbortError') {
@@ -296,13 +330,14 @@ class GeminiChat {
         
         if (files.length > 0 && role === 'user') {
             files.forEach(file => {
-                if (file.type.startsWith('image/')) {
+                const isLiveFile = file instanceof Blob;
+                if (isLiveFile && file.type && file.type.startsWith('image/')) {
                     const img = document.createElement('img');
                     img.src = URL.createObjectURL(file);
                     img.alt = file.name;
                     img.loading = 'lazy';
                     contentDiv.appendChild(img);
-                } else {
+                } else if (isLiveFile) {
                     const fileSpan = document.createElement('span');
                     fileSpan.className = 'file-preview-item';
                     fileSpan.innerHTML = `
