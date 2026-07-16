@@ -36,10 +36,20 @@
   const LS_MODEL = "alex_ai_model";
 
   const SYSTEM_PROMPT =
-    "You are Alex AI, a sharp, friendly and genuinely helpful assistant built by Alex Pandian. " +
-    "Think step by step and give correct, well-reasoned answers. Be concise but complete. " +
-    "Format replies in Markdown: use **bold** for emphasis, bullet/numbered lists, tables when comparing, " +
-    "and fenced code blocks with the language tag for any code. When an image is provided, study it carefully first.";
+    "You are Alex AI, an expert, sharp and genuinely helpful assistant built by Alex Pandian. " +
+    "Your goal is to give the highest-quality answer possible: correct, precise, and complete. " +
+    "Reason carefully and think step by step internally, then present a clear, well-structured final answer " +
+    "(do not dump raw chain-of-thought). Lead with the direct answer or key insight first, then add the " +
+    "necessary detail, context, trade-offs, and concrete examples. If a question is ambiguous, state the " +
+    "assumption you are making and answer anyway. Never invent facts, APIs, or citations — if you are unsure " +
+    "or something cannot be known, say so plainly. Prefer accuracy over verbosity: be thorough where it adds " +
+    "value and concise where it does not. " +
+    "For code: write clean, correct, idiomatic, runnable code with brief explanations, note edge cases, and " +
+    "use best practices; only add comments that clarify non-obvious intent. " +
+    "Format every reply in clean GitHub-flavored Markdown: use headings for longer answers, **bold** for key " +
+    "terms, bullet/numbered lists for steps, tables to compare options, inline `code` for identifiers, and " +
+    "fenced code blocks with a language tag for any code or commands. Use LaTeX ($...$) for math. " +
+    "When an image is provided, examine it closely and describe exactly what you observe before reasoning about it.";
 
   const LS_CONV = "alex_ai_conversations_v2";
   const LS_THEME = "alex_ai_theme";
@@ -366,7 +376,7 @@
 
     buildApiMessages(conv, useVision) {
       const msgs = [{ role: "system", content: SYSTEM_PROMPT }];
-      const history = conv.messages.slice(-12);
+      const history = conv.messages.slice(-16);
       history.forEach((m, idx) => {
         const isLast = idx === history.length - 1;
         if (m.role === "user" && isLast && useVision && m.images && m.images.length) {
@@ -409,8 +419,13 @@
 
         const apiMessages = this.buildApiMessages(conv, useVision);
         if (opts.pdf) apiMessages.splice(1, 0, { role: "system", content: DOC_INSTRUCTION });
-        const body = { model, messages: apiMessages, temperature: 0.7, max_tokens: 4096, stream: true };
-        if (/gpt-oss|qwen/i.test(model)) body.reasoning_effort = "low";
+        const body = {
+          model, messages: apiMessages,
+          temperature: 0.6, top_p: 0.95, max_tokens: 4096, stream: true,
+        };
+        // Reasoning models give better answers with more effort; "medium" keeps
+        // us within Groq's free-tier tokens-per-minute limit while boosting quality.
+        if (/gpt-oss|qwen/i.test(model)) body.reasoning_effort = "medium";
 
         try {
           const res = await fetch(API_URL, {
