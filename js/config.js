@@ -1,8 +1,10 @@
 /* ============================================================
- *  Alex-AI runtime config TEMPLATE  (copy to js/config.js)
+ *  Alex-AI runtime config.
  *
- *  Leave GROQ_API_KEY empty — the key is entered by each visitor in the
- *  app's Settings and stored only in their browser (localStorage).
+ *  No API key is stored here (this file is public on GitHub Pages).
+ *  Each visitor enters their own free Groq key in Settings; it is saved
+ *  only in their browser (localStorage) and never leaves their device.
+ *
  *  Get a free key at: https://console.groq.com/keys
  * ============================================================ */
 window.APP_CONFIG = {

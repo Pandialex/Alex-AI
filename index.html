@@ -70,7 +70,7 @@
       <div class="sidebar-foot">
         <div class="user-row">
           <div class="ava"><i class="fa-solid fa-user"></i></div>
-          <div class="meta"><b>You</b><br><span>NVIDIA · Free</span></div>
+          <div class="meta"><b>You</b><br><span>Groq · Free</span></div>
           <button class="icon-btn" id="settingsBtn" title="Settings"><i class="fa-solid fa-gear"></i></button>
         </div>
       </div>
@@ -139,9 +139,15 @@
           <div><b>Active model</b><div class="hint" id="settingsModel">—</div></div>
         </div>
         <div class="field" style="margin-top:16px">
+          <label for="apiKeyInput" style="display:block;font-weight:600;margin-bottom:4px">Groq API key</label>
+          <div class="hint" style="margin-bottom:8px">Stored only in this browser. Get a free key at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</div>
+          <input id="apiKeyInput" type="password" placeholder="gsk_…" autocomplete="off" spellcheck="false" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit" />
+          <button class="btn primary" id="saveKeyBtn" style="margin-top:8px"><i class="fa-solid fa-key"></i> Save key</button>
+        </div>
+        <div class="field" style="margin-top:16px">
           <button class="btn" id="clearAllBtn" style="color:var(--danger);border-color:var(--danger)"><i class="fa-solid fa-trash"></i> Clear all conversations</button>
         </div>
-        <p class="hint">Your API key lives server-side in <code>.env</code> (git-ignored) and is used by <code>server.py</code>. Conversations are stored locally in your browser.</p>
+        <p class="hint">Your key stays in your browser (localStorage) and is sent only to Groq. Conversations are stored locally too.</p>
       </div>
     </div>
   </div>

@@ -1,30 +1,29 @@
 /* ============================================================
  *  Alex-AI  —  application logic
- *  NVIDIA-powered, ChatGPT-style assistant + portfolio
+ *  Groq-powered, ChatGPT-style assistant + portfolio
  * ============================================================ */
 (() => {
   "use strict";
 
+  const API_URL = "https://api.groq.com/openai/v1/chat/completions";
   const CFG = window.APP_CONFIG || {};
-  // Same-origin proxy by default (server.py injects the key + forwards to NVIDIA).
-  const API_BASE = CFG.API_BASE || "/v1";
-  const API_URL = `${API_BASE}/chat/completions`;
-  const MODELS_URL = `${API_BASE}/models`;
-  // Only set a client key for a CORS-friendly provider used without the proxy.
-  const API_KEY = CFG.API_KEY || CFG.GROQ_API_KEY || "";
-  // Auth header is added by the proxy; only send one if a client key exists.
-  const authHeaders = () => (API_KEY ? { Authorization: `Bearer ${API_KEY}` } : {});
+  const LS_KEY = "alex_ai_groq_key";
+  // Key comes from the visitor's browser first, then any value baked into config.
+  let API_KEY = localStorage.getItem(LS_KEY) || CFG.GROQ_API_KEY || "";
   const TEXT_MODEL = CFG.TEXT_MODEL || "openai/gpt-oss-120b";
-  const VISION_MODEL = CFG.VISION_MODEL || "meta/llama-3.2-11b-vision-instruct";
+  const VISION_MODEL = CFG.VISION_MODEL || "meta-llama/llama-4-scout-17b-16e-instruct";
 
   // Smart fallback chains — if a model hits its token/rate limit, the next is tried.
   const dedupe = (arr) => [...new Set(arr.filter(Boolean))];
   const short = (id) => (id || "").split("/").pop();
   const TEXT_FALLBACKS = [
-    "meta/llama-3.1-8b-instruct",
-    "qwen/qwen3.5-122b-a10b",
+    "llama-3.3-70b-versatile",
+    "openai/gpt-oss-20b",
+    "qwen/qwen3-32b",
+    "llama-3.1-8b-instant",
+    "groq/compound",
   ];
-  const VISION_FALLBACKS = ["meta/llama-3.2-90b-vision-instruct"];
+  const VISION_FALLBACKS = ["qwen/qwen3.6-27b"];
   const TEXT_CHAIN = dedupe([TEXT_MODEL, ...TEXT_FALLBACKS]);
   const VISION_CHAIN = dedupe([VISION_MODEL, ...VISION_FALLBACKS]);
 
@@ -310,8 +309,10 @@
       const text = this.input.value.trim();
       if (!text && !this.attachments.length) return;
 
-      if (API_KEY && API_KEY.includes("your_api_key")) {
-        this.toast("No API key set — add it to .env and restart server.py");
+      if (!API_KEY || API_KEY.includes("your_groq_api_key")) {
+        this.toast("Add your free Groq API key in Settings to start chatting");
+        this.openModal("settingsModal");
+        const inp = $("apiKeyInput"); if (inp) inp.focus();
         return;
       }
 
@@ -409,11 +410,12 @@
         const apiMessages = this.buildApiMessages(conv, useVision);
         if (opts.pdf) apiMessages.splice(1, 0, { role: "system", content: DOC_INSTRUCTION });
         const body = { model, messages: apiMessages, temperature: 0.7, max_tokens: 4096, stream: true };
+        if (/gpt-oss|qwen/i.test(model)) body.reasoning_effort = "low";
 
         try {
           const res = await fetch(API_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json", ...authHeaders() },
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${API_KEY}` },
             body: JSON.stringify(body),
             signal: this.controller.signal,
           });
@@ -487,7 +489,7 @@
           const target = bubble || bubbleEl;
           target.innerHTML =
             `<span style="color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(finalError.message)}</span>`;
-          console.error("NVIDIA API error:", finalError);
+          console.error("Groq API error:", finalError);
         } else {
           if (!acc) acc = "_(No response received.)_";
           bubble.innerHTML = renderMarkdown(acc);
@@ -690,9 +692,13 @@
     async loadModelList() {
       let models = null;
       try {
-        const res = await fetch(MODELS_URL, { headers: { ...authHeaders() } });
-        if (res.ok) models = (await res.json()).data;
-      } catch (_) { /* server down / offline → use static chain */ }
+        if (API_KEY && !API_KEY.includes("your_groq_api_key")) {
+          const res = await fetch("https://api.groq.com/openai/v1/models", {
+            headers: { Authorization: `Bearer ${API_KEY}` },
+          });
+          if (res.ok) models = (await res.json()).data;
+        }
+      } catch (_) { /* offline / blocked → use static chain */ }
       this.populateModelSelect(models);
     }
 
@@ -954,6 +960,9 @@
       const sw = $("autoSpeakSwitch");
       if (sw) { sw.classList.toggle("on", this.autoSpeak); $("autoSpeakRow").addEventListener("click", () => this.toggleAutoSpeak()); }
       $("clearAllBtn") && $("clearAllBtn").addEventListener("click", () => this.clearAllData());
+      $("saveKeyBtn") && $("saveKeyBtn").addEventListener("click", () => this.saveApiKey());
+      const keyInput = $("apiKeyInput");
+      if (keyInput) keyInput.addEventListener("keydown", (e) => { if (e.key === "Enter") this.saveApiKey(); });
 
       // camera
       $("captureBtn") && $("captureBtn").addEventListener("click", () => this.capturePhoto());
@@ -972,8 +981,27 @@
       });
     }
 
+    // ---------- api key ----------
+    saveApiKey() {
+      const inp = $("apiKeyInput");
+      if (!inp) return;
+      const key = inp.value.trim();
+      if (!key) { this.toast("Paste a Groq key first"); return; }
+      API_KEY = key;
+      localStorage.setItem(LS_KEY, key);
+      this.toast("API key saved in this browser");
+      this.loadModelList();
+    }
+
     // ---------- modals ----------
-    openModal(id) { $(id).classList.add("show"); document.body.style.overflow = "hidden"; }
+    openModal(id) {
+      $(id).classList.add("show");
+      document.body.style.overflow = "hidden";
+      if (id === "settingsModal") {
+        const inp = $("apiKeyInput");
+        if (inp) inp.value = API_KEY || "";
+      }
+    }
     closeModal(id) {
       $(id).classList.remove("show");
       document.body.style.overflow = "";

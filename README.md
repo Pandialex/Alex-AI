@@ -1,8 +1,7 @@
 # Alex-AI
 
 A fast, **ChatGPT-style AI assistant** built into Alex Pandian's portfolio site.
-Plain HTML / CSS / JavaScript frontend, with a tiny **Python proxy** that talks to
-the **NVIDIA API** (OpenAI-compatible) and keeps your key server-side.
+Plain HTML / CSS / JavaScript, powered by the **Groq API** (OpenAI-compatible).
 
 ## Features
 
@@ -14,70 +13,45 @@ the **NVIDIA API** (OpenAI-compatible) and keeps your key server-side.
 - **Stop / Regenerate**, export chat, drag-drop & paste images, light/dark theme
 - **Responsive** — clean layout on desktop and mobile
 
-## Models
+## Models (verified live on Groq, June 2026)
 
 | Use | Model |
 |-----|-------|
 | Text | `openai/gpt-oss-120b` |
-| Vision (images) | `meta/llama-3.2-11b-vision-instruct` |
+| Vision (images) | `meta-llama/llama-4-scout-17b-16e-instruct` |
 
-The vision model is selected automatically when you attach an image. The model
-dropdown is also populated live from the NVIDIA `/v1/models` list, so you can
-switch to any model your key can access. Change the defaults in `js/config.js`.
+The vision model is selected automatically when you attach an image.
 
-> Note: some NVIDIA models (e.g. `z-ai/glm-5.2`, `meta/llama-3.3-70b-instruct`)
-> can be very slow or time out. The defaults above are chosen for reliable,
-> fast streaming.
+## Setup
 
-## Why a proxy?
+1. Deploy: push to **GitHub Pages** (Settings → Pages → deploy from `main`),
+   or just open `index.html` locally / serve the folder with any static server.
+2. Open the app, click the **gear (Settings)** icon, and paste a free Groq key
+   (<https://console.groq.com/keys>). Click **Save key** and start chatting.
 
-NVIDIA's `integrate.api.nvidia.com` does **not** send CORS headers, so a browser
-cannot call it directly (you get `Failed to fetch`). `server.py` solves this: it
-serves the site and forwards `/v1/*` to NVIDIA with your key attached, so the key
-never reaches the browser.
+The key is stored **only in your browser** (localStorage) and is sent directly
+to Groq — it is never committed to the repo. Each visitor supplies their own key.
 
-## Setup (1 minute)
-
-Requires **Python 3** (no pip packages needed — standard library only).
-
-1. Get a free NVIDIA key: <https://build.nvidia.com/>
-2. Create your secrets and config files from the templates:
-   ```bash
-   copy .env.example .env                     # Windows
-   copy js\config.example.js js\config.js     # Windows
-   # cp .env.example .env                      # macOS/Linux
-   # cp js/config.example.js js/config.js      # macOS/Linux
-   ```
-   Then edit `.env` and set `API_KEY` to your NVIDIA key.
-3. Start the server and open the app:
-   ```bash
-   python server.py
-   ```
-   Visit <http://localhost:8000>.
-
-> Do **not** just open `index.html` as a file — the app must be served by
-> `server.py` so the `/v1` proxy is available.
+Groq is used because it allows direct calls from the browser (CORS), so the app
+works as a **pure static site** with no backend. Providers like NVIDIA block
+browser calls and would require a server.
 
 ## Security
 
-- `.env` and `js/config.js` are **git-ignored**; only the `*.example` templates
-  are tracked, so your key never gets committed.
-- The key stays **server-side** in `.env`. The browser only talks to the local
-  `/v1` proxy, so visitors never see the key in dev-tools.
-- **Regenerate your key** at build.nvidia.com if it was ever committed or shared.
+- No API key is stored in the repo. `js/config.js` ships with an empty key.
+- The key you enter lives in your browser only (localStorage) and goes straight
+  to Groq. Clearing your browser data removes it.
 
 ## Project structure
 
 ```
-server.py             Static server + NVIDIA /v1 proxy (reads .env)
 index.html            Markup (portfolio + chat UI)
 css/style.css         Professional theme (light/dark)
 js/app.js             App logic (streaming, vision, voice, history)
-js/config.js          Frontend config  (git-ignored — create from example)
-js/config.example.js  Config template (tracked)
-.env / .env.example   Server secrets / template
+js/config.js          Runtime config incl. Groq key (committed for Pages)
+js/config.example.js  Config template
 ```
 
 ## Built with
 
-Python (stdlib) · HTML5 · CSS3 · Vanilla JavaScript · NVIDIA API · marked · DOMPurify · highlight.js
+HTML5 · CSS3 · Vanilla JavaScript · Groq API · marked · DOMPurify · highlight.js

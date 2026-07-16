@@ -1,8 +1,10 @@
 # ---- Secrets (NEVER commit these) ----
 .env
 .env.local
-js/config.js
-config.js
+
+# NOTE: js/config.js is intentionally COMMITTED for the static GitHub Pages
+# deploy (the browser needs the key). Treat that Groq key as public and rotate
+# it if abused. Do NOT put private keys (e.g. NVIDIA) in config.js.
 
 # ---- Dependencies / build ----
 node_modules/
