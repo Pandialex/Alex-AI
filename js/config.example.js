@@ -1,12 +1,15 @@
 /* ============================================================
  *  Alex-AI runtime config TEMPLATE
- *  Copy this file to "js/config.js" and paste your real Groq key.
- *  js/config.js is git-ignored so your key never reaches GitHub.
+ *  Copy this file to "js/config.js".
  *
- *  Get a free key at: https://console.groq.com/keys
+ *  Your API key does NOT go here — it lives in .env and is read
+ *  server-side by server.py. The browser only talks to the local
+ *  proxy at /v1, so the key is never exposed to visitors.
+ *
+ *  Start with:  python server.py   then open http://localhost:8000
  * ============================================================ */
 window.APP_CONFIG = {
-  GROQ_API_KEY: "your_groq_api_key_here",
+  API_BASE: "/v1",              // same-origin proxy (server.py adds the key)
   TEXT_MODEL: "openai/gpt-oss-120b",
-  VISION_MODEL: "meta-llama/llama-4-scout-17b-16e-instruct",
+  VISION_MODEL: "meta/llama-3.2-11b-vision-instruct",
 };

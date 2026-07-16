@@ -1,7 +1,8 @@
 # Alex-AI
 
 A fast, **ChatGPT-style AI assistant** built into Alex Pandian's portfolio site.
-Plain HTML / CSS / JavaScript, powered by the **Groq API** (OpenAI-compatible).
+Plain HTML / CSS / JavaScript frontend, with a tiny **Python proxy** that talks to
+the **NVIDIA API** (OpenAI-compatible) and keeps your key server-side.
 
 ## Features
 
@@ -13,51 +14,70 @@ Plain HTML / CSS / JavaScript, powered by the **Groq API** (OpenAI-compatible).
 - **Stop / Regenerate**, export chat, drag-drop & paste images, light/dark theme
 - **Responsive** — clean layout on desktop and mobile
 
-## Models (verified live on Groq, June 2026)
+## Models
 
 | Use | Model |
 |-----|-------|
 | Text | `openai/gpt-oss-120b` |
-| Vision (images) | `meta-llama/llama-4-scout-17b-16e-instruct` |
+| Vision (images) | `meta/llama-3.2-11b-vision-instruct` |
 
-The vision model is selected automatically when you attach an image.
+The vision model is selected automatically when you attach an image. The model
+dropdown is also populated live from the NVIDIA `/v1/models` list, so you can
+switch to any model your key can access. Change the defaults in `js/config.js`.
+
+> Note: some NVIDIA models (e.g. `z-ai/glm-5.2`, `meta/llama-3.3-70b-instruct`)
+> can be very slow or time out. The defaults above are chosen for reliable,
+> fast streaming.
+
+## Why a proxy?
+
+NVIDIA's `integrate.api.nvidia.com` does **not** send CORS headers, so a browser
+cannot call it directly (you get `Failed to fetch`). `server.py` solves this: it
+serves the site and forwards `/v1/*` to NVIDIA with your key attached, so the key
+never reaches the browser.
 
 ## Setup (1 minute)
 
-1. Get a free Groq key: <https://console.groq.com/keys>
-2. Copy the config template and paste your key:
+Requires **Python 3** (no pip packages needed — standard library only).
+
+1. Get a free NVIDIA key: <https://build.nvidia.com/>
+2. Create your secrets and config files from the templates:
    ```bash
-   copy js\config.example.js js\config.js   # Windows
-   # cp js/config.example.js js/config.js   # macOS/Linux
+   copy .env.example .env                     # Windows
+   copy js\config.example.js js\config.js     # Windows
+   # cp .env.example .env                      # macOS/Linux
+   # cp js/config.example.js js/config.js      # macOS/Linux
    ```
-   Then edit `js/config.js` and set `GROQ_API_KEY`.
-3. Open `index.html` in your browser (or serve the folder with any static server).
+   Then edit `.env` and set `API_KEY` to your NVIDIA key.
+3. Start the server and open the app:
+   ```bash
+   python server.py
+   ```
+   Visit <http://localhost:8000>.
 
-> The same values also live in `.env` (a copy of `.env.example`) for use if you
-> later add a backend. A no-build static site can't read `.env` directly, so the
-> browser reads `js/config.js`.
+> Do **not** just open `index.html` as a file — the app must be served by
+> `server.py` so the `/v1` proxy is available.
 
-## Security — important
+## Security
 
-- `js/config.js` and `.env` are **git-ignored**, so your key never gets committed
-  to GitHub again. Only the `*.example` templates are tracked.
-- **Regenerate your key** at console.groq.com/keys if it was ever committed or shared.
-- ⚠️ Note: in any *static* site the key is still readable by visitors via browser
-  dev-tools. To fully hide it you need a small backend proxy (e.g. Node/Express
-  reading `.env`) that the frontend calls instead of Groq directly. Git-ignoring
-  the key here fixes the "secret committed to repo" exposure error.
+- `.env` and `js/config.js` are **git-ignored**; only the `*.example` templates
+  are tracked, so your key never gets committed.
+- The key stays **server-side** in `.env`. The browser only talks to the local
+  `/v1` proxy, so visitors never see the key in dev-tools.
+- **Regenerate your key** at build.nvidia.com if it was ever committed or shared.
 
 ## Project structure
 
 ```
+server.py             Static server + NVIDIA /v1 proxy (reads .env)
 index.html            Markup (portfolio + chat UI)
 css/style.css         Professional theme (light/dark)
 js/app.js             App logic (streaming, vision, voice, history)
-js/config.js          Your secrets  (git-ignored — create from example)
+js/config.js          Frontend config  (git-ignored — create from example)
 js/config.example.js  Config template (tracked)
-.env / .env.example   Secret store / template
+.env / .env.example   Server secrets / template
 ```
 
 ## Built with
 
-HTML5 · CSS3 · Vanilla JavaScript · Groq API · marked · DOMPurify · highlight.js
+Python (stdlib) · HTML5 · CSS3 · Vanilla JavaScript · NVIDIA API · marked · DOMPurify · highlight.js

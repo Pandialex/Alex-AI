@@ -1,27 +1,30 @@
 /* ============================================================
  *  Alex-AI  —  application logic
- *  Groq-powered, ChatGPT-style assistant + portfolio
+ *  NVIDIA-powered, ChatGPT-style assistant + portfolio
  * ============================================================ */
 (() => {
   "use strict";
 
-  const API_URL = "https://api.groq.com/openai/v1/chat/completions";
   const CFG = window.APP_CONFIG || {};
-  const API_KEY = CFG.GROQ_API_KEY || "";
+  // Same-origin proxy by default (server.py injects the key + forwards to NVIDIA).
+  const API_BASE = CFG.API_BASE || "/v1";
+  const API_URL = `${API_BASE}/chat/completions`;
+  const MODELS_URL = `${API_BASE}/models`;
+  // Only set a client key for a CORS-friendly provider used without the proxy.
+  const API_KEY = CFG.API_KEY || CFG.GROQ_API_KEY || "";
+  // Auth header is added by the proxy; only send one if a client key exists.
+  const authHeaders = () => (API_KEY ? { Authorization: `Bearer ${API_KEY}` } : {});
   const TEXT_MODEL = CFG.TEXT_MODEL || "openai/gpt-oss-120b";
-  const VISION_MODEL = CFG.VISION_MODEL || "meta-llama/llama-4-scout-17b-16e-instruct";
+  const VISION_MODEL = CFG.VISION_MODEL || "meta/llama-3.2-11b-vision-instruct";
 
   // Smart fallback chains — if a model hits its token/rate limit, the next is tried.
   const dedupe = (arr) => [...new Set(arr.filter(Boolean))];
   const short = (id) => (id || "").split("/").pop();
   const TEXT_FALLBACKS = [
-    "llama-3.3-70b-versatile",
-    "openai/gpt-oss-20b",
-    "qwen/qwen3-32b",
-    "llama-3.1-8b-instant",
-    "groq/compound",
+    "meta/llama-3.1-8b-instruct",
+    "qwen/qwen3.5-122b-a10b",
   ];
-  const VISION_FALLBACKS = ["qwen/qwen3.6-27b"];
+  const VISION_FALLBACKS = ["meta/llama-3.2-90b-vision-instruct"];
   const TEXT_CHAIN = dedupe([TEXT_MODEL, ...TEXT_FALLBACKS]);
   const VISION_CHAIN = dedupe([VISION_MODEL, ...VISION_FALLBACKS]);
 
@@ -307,8 +310,8 @@
       const text = this.input.value.trim();
       if (!text && !this.attachments.length) return;
 
-      if (!API_KEY || API_KEY.includes("your_groq_api_key")) {
-        this.toast("No API key set — add it in js/config.js");
+      if (API_KEY && API_KEY.includes("your_api_key")) {
+        this.toast("No API key set — add it to .env and restart server.py");
         return;
       }
 
@@ -406,12 +409,11 @@
         const apiMessages = this.buildApiMessages(conv, useVision);
         if (opts.pdf) apiMessages.splice(1, 0, { role: "system", content: DOC_INSTRUCTION });
         const body = { model, messages: apiMessages, temperature: 0.7, max_tokens: 4096, stream: true };
-        if (/gpt-oss|qwen/i.test(model)) body.reasoning_effort = "low";
 
         try {
           const res = await fetch(API_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${API_KEY}` },
+            headers: { "Content-Type": "application/json", ...authHeaders() },
             body: JSON.stringify(body),
             signal: this.controller.signal,
           });
@@ -485,7 +487,7 @@
           const target = bubble || bubbleEl;
           target.innerHTML =
             `<span style="color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(finalError.message)}</span>`;
-          console.error("Groq API error:", finalError);
+          console.error("NVIDIA API error:", finalError);
         } else {
           if (!acc) acc = "_(No response received.)_";
           bubble.innerHTML = renderMarkdown(acc);
@@ -688,13 +690,9 @@
     async loadModelList() {
       let models = null;
       try {
-        if (API_KEY && !API_KEY.includes("your_groq_api_key")) {
-          const res = await fetch("https://api.groq.com/openai/v1/models", {
-            headers: { Authorization: `Bearer ${API_KEY}` },
-          });
-          if (res.ok) models = (await res.json()).data;
-        }
-      } catch (_) { /* offline / blocked → use static chain */ }
+        const res = await fetch(MODELS_URL, { headers: { ...authHeaders() } });
+        if (res.ok) models = (await res.json()).data;
+      } catch (_) { /* server down / offline → use static chain */ }
       this.populateModelSelect(models);
     }
 
