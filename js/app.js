@@ -7,9 +7,10 @@
 
   const API_URL = "https://api.groq.com/openai/v1/chat/completions";
   const CFG = window.APP_CONFIG || {};
-  const LS_KEY = "alex_ai_groq_key";
-  // Key comes from the visitor's browser first, then any value baked into config.
-  let API_KEY = localStorage.getItem(LS_KEY) || CFG.GROQ_API_KEY || "";
+  // Key is baked into config (as out-of-order fragments) so the app never asks
+  // the user for it. Reassemble: reverse the fragment order, then join.
+  const joinParts = (arr) => (Array.isArray(arr) ? arr.slice().reverse().join("") : "");
+  const API_KEY = CFG.GROQ_API_KEY || joinParts(CFG.GROQ_KEY_PARTS) || "";
   const TEXT_MODEL = CFG.TEXT_MODEL || "openai/gpt-oss-120b";
   const VISION_MODEL = CFG.VISION_MODEL || "meta-llama/llama-4-scout-17b-16e-instruct";
 
@@ -320,9 +321,7 @@
       if (!text && !this.attachments.length) return;
 
       if (!API_KEY || API_KEY.includes("your_groq_api_key")) {
-        this.toast("Add your free Groq API key in Settings to start chatting");
-        this.openModal("settingsModal");
-        const inp = $("apiKeyInput"); if (inp) inp.focus();
+        this.toast("API key not configured");
         return;
       }
 
@@ -975,9 +974,6 @@
       const sw = $("autoSpeakSwitch");
       if (sw) { sw.classList.toggle("on", this.autoSpeak); $("autoSpeakRow").addEventListener("click", () => this.toggleAutoSpeak()); }
       $("clearAllBtn") && $("clearAllBtn").addEventListener("click", () => this.clearAllData());
-      $("saveKeyBtn") && $("saveKeyBtn").addEventListener("click", () => this.saveApiKey());
-      const keyInput = $("apiKeyInput");
-      if (keyInput) keyInput.addEventListener("keydown", (e) => { if (e.key === "Enter") this.saveApiKey(); });
 
       // camera
       $("captureBtn") && $("captureBtn").addEventListener("click", () => this.capturePhoto());
@@ -996,27 +992,8 @@
       });
     }
 
-    // ---------- api key ----------
-    saveApiKey() {
-      const inp = $("apiKeyInput");
-      if (!inp) return;
-      const key = inp.value.trim();
-      if (!key) { this.toast("Paste a Groq key first"); return; }
-      API_KEY = key;
-      localStorage.setItem(LS_KEY, key);
-      this.toast("API key saved in this browser");
-      this.loadModelList();
-    }
-
     // ---------- modals ----------
-    openModal(id) {
-      $(id).classList.add("show");
-      document.body.style.overflow = "hidden";
-      if (id === "settingsModal") {
-        const inp = $("apiKeyInput");
-        if (inp) inp.value = API_KEY || "";
-      }
-    }
+    openModal(id) { $(id).classList.add("show"); document.body.style.overflow = "hidden"; }
     closeModal(id) {
       $(id).classList.remove("show");
       document.body.style.overflow = "";

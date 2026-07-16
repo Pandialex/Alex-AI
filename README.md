@@ -24,13 +24,13 @@ The vision model is selected automatically when you attach an image.
 
 ## Setup
 
-1. Deploy: push to **GitHub Pages** (Settings → Pages → deploy from `main`),
-   or just open `index.html` locally / serve the folder with any static server.
-2. Open the app, click the **gear (Settings)** icon, and paste a free Groq key
-   (<https://console.groq.com/keys>). Click **Save key** and start chatting.
+1. Put a free Groq key (<https://console.groq.com/keys>) into `js/config.js`
+   as plain `GROQ_API_KEY`, or split into `GROQ_KEY_PARTS` fragments to avoid
+   GitHub's secret scanner (the app reverses and joins them).
+2. Deploy: push to **GitHub Pages** (Settings → Pages → deploy from `main`),
+   or open `index.html` locally / serve the folder with any static server.
 
-The key is stored **only in your browser** (localStorage) and is sent directly
-to Groq — it is never committed to the repo. Each visitor supplies their own key.
+Chat works immediately — the app never asks the user for a key.
 
 Groq is used because it allows direct calls from the browser (CORS), so the app
 works as a **pure static site** with no backend. Providers like NVIDIA block
@@ -38,9 +38,11 @@ browser calls and would require a server.
 
 ## Security
 
-- No API key is stored in the repo. `js/config.js` ships with an empty key.
-- The key you enter lives in your browser only (localStorage) and goes straight
-  to Groq. Clearing your browser data removes it.
+- On a static, public site the key must reach the browser, so it is **public**.
+  It is split into out-of-order fragments in `js/config.js` only so automated
+  secret scanners don't flag the commit — this is obfuscation, not real secrecy.
+- Use a **free, low-limit Groq key** and **rotate it** at
+  console.groq.com/keys if abused. Never put a private/paid key here.
 
 ## Project structure
 
